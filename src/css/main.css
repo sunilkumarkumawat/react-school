@@ -1,0 +1,143 @@
+/* modalSidebar.css or layout.css */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px; 
+    height: 100%;
+    background-color: #343a40;
+    z-index: 1000;
+  }
+  
+  .content {
+
+    transition: margin-left 0.3s ease;
+    padding: 20px;
+  }
+  
+.collapsed {
+    margin-left: 70px !important;
+}
+.expend {
+    margin-left: 250px !important;
+}
+
+.alignment_text{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* CustomInput Css */
+
+.floating-input {
+  position: relative;
+  width: 300px;
+  margin: 30px 0;
+}
+
+.floating-input input {
+  width: 100%;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  padding: 8px 0 5px;
+  background: transparent;
+}
+
+.floating-input label {
+  position: absolute;
+  top: 8px;
+  left: 3px;
+  /* color: #ec407a; */
+  font-size: 13px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+}
+
+.floating-input input:focus + label,
+.floating-input label.active {
+  top: -16px;
+  font-size: 12px;
+  color: #42424a;
+}
+
+.floating-input .underline {
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  height: 2px;
+  width: 100%;
+  background-color: #42424a;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.floating-input input:focus ~ .underline {
+  transform: scaleX(1);
+}
+
+/* CustomInput Css */
+
+.floating-select {
+  position: relative;
+  width: 300px;
+  margin: 30px 0;
+}
+
+.floating-select select {
+  width: 100%;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  padding: 8px 0 5px;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.floating-select label {
+  position: absolute;
+  top: 8px;
+  left: 3px;
+  color: #ec407a;
+  font-size: 13px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+}
+
+.floating-select select:focus + label,
+.floating-select label.active {
+  top: -16px;
+  font-size: 12px;
+  color: #42424a;
+}
+
+.floating-select .underline {
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  height: 2px;
+  width: 100%;
+  background-color: #42424a;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.floating-select select:focus ~ .underline {
+  transform: scaleX(1);
+}
+
+
+
+/* Navbar */
+/* .navbar {
+    display: flex;
+    justify-content: space-between;
+    height: 56px;
+} */

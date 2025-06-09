@@ -1,0 +1,26 @@
+.toastr-item {
+    background-color: #333;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 4px;
+    min-width: 200px;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .toastr-close {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  .toastr-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
