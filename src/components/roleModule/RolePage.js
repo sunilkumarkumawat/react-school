@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext,useMemo, useCallback } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { validateFields } from '../../utils/validation';
@@ -6,18 +6,22 @@ import Input from '../common/Input';
 import { AppContext } from "../../context/AppContext";
 import ActionButton from '../common/ActionButton';
 import { fetchRoles } from '../../redux/rolesSlice'; // <-- Import thunk
+import AssignPermission from './AssignPermission';
 
 const RolePage = () => {
-  const { token } = useContext(AppContext);
+  const { token, user } = useContext(AppContext);
   const API_URL = process.env.REACT_APP_BASE_URL || '';
   const dispatch = useDispatch();
   const roles = useSelector(state => state.roles.roles || []);
   const roleStatus = useSelector(state => state.roles.status);
+  const [finalPermission, setFinalPermission] = useState([]);
+  const initialPermissions = useMemo(() => [], []);
 
   const [formData, setFormData] = useState({
     id: '',
     name: '',
     description: '',
+    permissions: ''
   });
 
   const [isEdit, setIsEdit] = useState(false);
@@ -57,11 +61,17 @@ const RolePage = () => {
       return;
     }
 
+  // Create updated formData with permissions
+  const updatedFormData = {
+    ...formData,
+    permissions: JSON.stringify(finalPermission),
+  };
+
     const url = isEdit ? `${API_URL}/role/${formData.id}` : `${API_URL}/role`;
     const method = isEdit ? 'put' : 'post';
 
     try {
-      await axios[method](url, formData, {
+      await axios[method](url, updatedFormData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -108,20 +118,41 @@ const RolePage = () => {
     { label: 'Description', name: 'description' }
   ];
 
+
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    const loadMenuItems = () => {
+      const cachedMenu = localStorage.getItem(`menu_${user?.id}`);
+      if (cachedMenu) {
+        setMenuItems(JSON.parse(cachedMenu));
+      } else {
+        setMenuItems([]); // or you can keep it unchanged
+      }
+    };
+
+    loadMenuItems();
+  }, [user?.id]);
+
+
+ const handlePermissionChange = useCallback((permissions) => {
+    setFinalPermission(permissions);
+  }, []);
+
   return (
-   <div className="">
+    <div className="">
       <div className="row mb-1">
         <div className="col-12">
           <ul className="breadcrumb">
             <li className="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-            <li className="breadcrumb-item active">Role</li>
+            <li className="breadcrumb-item active">Role{finalPermission}</li>
           </ul>
         </div>
       </div>
 
       <div className="row">
         {/* Role Form */}
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="card border-primary">
             <div className="card-header bg-primary text-white">
               <h5 className="mb-0"><i className="fa fa-user-shield"></i> {isEdit ? 'Edit' : 'Add'} Role</h5>
@@ -144,9 +175,9 @@ const RolePage = () => {
                     </div>
                   ))}
                   <div className="col-12 mt-2">
-                    <ActionButton type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn btn-primary">
                       {isEdit ? 'Update' : 'Submit'}
-                    </ActionButton>
+                    </button>
                   </div>
                 </div>
               </form>
@@ -154,11 +185,28 @@ const RolePage = () => {
           </div>
         </div>
 
-        {/* Role List */}
-        <div className="col-md-8">
+        <div className="col-md-9">
           <div className="card">
-            <div className="card-header bg-light">
-              <h5><i className="fa fa-list"></i> Role List</h5>
+            <div className="card-header bg-primary text-white">
+              <h5 className="mb-0"><i className="fa fa-key"></i> Set Role Permissions</h5>
+            </div>
+            <div className="card-body">
+              <AssignPermission
+                sidebarMenu={menuItems}
+                roleId={1}
+                initialPermissions={initialPermissions}
+                 handlePermissionChange = {handlePermissionChange}
+            
+              />
+            </div>
+          </div>
+
+        </div>
+        {/* Role List */}
+        <div className="col-md-12">
+          <div className="card">
+            <div className="card-header bg-primary text-white">
+              <h5 className="mb-0"><i className="fa fa-list"></i> Role List</h5>
             </div>
             <div className="card-body">
               <div className="table-responsive">
@@ -208,4 +256,3 @@ export default RolePage;
 
 
 
-  

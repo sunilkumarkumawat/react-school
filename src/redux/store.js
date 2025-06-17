@@ -8,9 +8,10 @@ import homeReducer from './homeSlice';
 import subLocalityReducer from './subLocalitySlice';
 import popularLocalityReducer from './popularLocalitySlice';
 import profilePropertyReducer from './profilePropertySlice';
-import rolesReducer from './rolesSlice'; // Importing roles slice
-import branchesReducer from './branchSlice'; // Importing branches slice
-import usersListReducer from './usersListSlice'; // Importing users list slice
+import rolesReducer from './rolesSlice';
+import branchesReducer from './branchSlice';
+import usersListReducer from './usersListSlice';
+import expensesReducer from './expensesSlice'; // Importing expenses slice
 
 const store = configureStore({
   reducer: {
@@ -23,9 +24,10 @@ const store = configureStore({
     subLocalities: subLocalityReducer,
     popularLocalities: popularLocalityReducer,
     profileProperty: profilePropertyReducer,
-    roles: rolesReducer,      // roles state
-    branches: branchesReducer, // branches state
-    usersList: usersListReducer // users list state
+    roles: rolesReducer,
+    branches: branchesReducer,
+    usersList: usersListReducer,
+    expenses: expensesReducer, // Added expenses state
   },
 });
 

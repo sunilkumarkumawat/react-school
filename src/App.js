@@ -21,6 +21,7 @@ import { fetchRoles } from './redux/rolesSlice';
 import UserAdd from './components/UserAdd';
 import UserView from './components/UserView';
 import { fetchUsersList } from './redux/usersListSlice';
+import ExpensePage from './components/Expense/ExpensePage';
 
 function App() {
   return (
@@ -87,6 +88,7 @@ function MainApp() {
             <Route path="profile" element={<ProtectedRoute element={<ProfilePage/>} />} />
             <Route path="userAdd" element={<ProtectedRoute element={<UserAdd/>} />} />
             <Route path="userView" element={<ProtectedRoute element={<UserView/>} />} />
+            <Route path="expense" element={<ProtectedRoute element={<ExpensePage/>} />} />
           </Route>
         )}
       </Routes>

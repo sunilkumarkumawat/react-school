@@ -19,43 +19,7 @@ const Roles = ({
         <p className="text-danger">Error loading roles: {error}</p>
       ) : (
         <>
-          {/* <div className="row">
-            {Object.values(roles).map((role) => (
-              <div key={role.id} className="col-md-4">
-                <li
-                  className="d-flex align-items-center justify-content-between px-3 py-2 border rounded mb-3"
-                  style={{
-                    background: selectedRoleId == role.id ? "green" : "",
-                    color: selectedRoleId == role.id ? "white" : "black",
-                  }}
-                >
-                  <span
-                    onClick={() => handleRoleClick(role.id)}
-                    className="flex-grow-1"
-                    style={{ cursor: "pointer" }}
-                  >
-                    <i className="bi bi-person-badge me-2"></i>
-                    {role.name}
-                  </span>
-
-                  <div className="d-flex gap-2 ms-2">
-                    <i
-                      className="bi bi-pencil text-primary"
-                      title="Edit"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleRoleEdit(role)}
-                    ></i>
-                    <i
-                      className="bi bi-trash text-danger"
-                      title="Delete"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleRoleDelete(role.id)}
-                    ></i>
-                  </div>
-                </li>
-              </div>
-            ))}
-          </div> */}
+  
           <div className="dropdown" style={{width: 'fit-content'}}>
             <a
               href="#"

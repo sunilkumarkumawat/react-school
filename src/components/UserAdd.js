@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect,useCallback } from "react";
 import Input from "./common/Input";
 import { AppContext } from "../context/AppContext";
 import { validateFields } from '../utils/validation';
@@ -10,6 +10,7 @@ import { fetchBranches } from "../redux/branchSlice";
 import AppImage from "../utils/AppImage";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import AssignPermission from "./roleModule/AssignPermission";
 
 const UserAdd = ({ editData, onSuccess }) => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const UserAdd = ({ editData, onSuccess }) => {
   const roleStatus = useSelector(state => state.roles.status);
   const branches = useSelector(state => state.branches.branches || []);
   const branchStatus = useSelector(state => state.branches.status);
+  const [finalPermission,setFinalPermission] = useState([]);
   // Find user by id from usersListSlice if id param exists and no editData
   const idParam = searchParams.get("id");
   const userFromList = idParam && !editData
@@ -102,26 +104,27 @@ const UserAdd = ({ editData, onSuccess }) => {
     {
       category: 'basic_details',
       fields: [
-        { label: 'Branch', name: 'branch_id', required: true, type: 'select', options: branches.map(b => ({ value: b.id, label: b.name })) },
-        { label: 'Role', name: 'role_id', required: true, type: 'select', options: roles.map(r => ({ value: r.id, label: r.name })) },
-        { label: 'Name', name: 'name', required: true },
-        { label: 'Mobile', name: 'mobile', required: true, pattern: '^[0-9]{10}$' },
-        { label: 'Email', name: 'email', type: 'email', required: true },
-        { label: 'Username', name: 'username', required: true },
-        { label: 'Password', name: 'password', type: 'password', required: !(editData || userFromList) },
+        { label: 'Branch', name: 'branch_id', required: false, type: 'select', options: branches.map(b => ({ value: b.id, label: b.name })) },
+        { label: 'Role', name: 'role_id', required: false, type: 'select', options: roles.map(r => ({ value: r.id, label: r.name })) },
+        { label: 'Name', name: 'name', required: false },
+        { label: 'Mobile', name: 'mobile', required: false, pattern: '^[0-9]{10}$' },
+        { label: 'Email', name: 'email', type: 'email', required: false },
+        { label: 'Username', name: 'username', required: false },
+        // { label: 'Password', name: 'password', type: 'password', required: !(editData || userFromList) },
+        { label: 'Password', name: 'password', type: 'password', required: false },
 
       ]
     },
     {
       category: 'additional_details',
       fields: [
-        { label: 'DOB', name: 'dob', type: 'date', required: true },
-        { label: 'Gender', name: 'gender_id', required: true, type: 'select', options: [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }, { value: 'Other', label: 'Other' }] },
-        { label: 'Father Name', name: 'father_name', required: true },
+        { label: 'DOB', name: 'dob', type: 'date', required: false },
+        { label: 'Gender', name: 'gender_id', required: false, type: 'select', options: [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }, { value: 'Other', label: 'Other' }] },
+        { label: 'Father Name', name: 'father_name', required: false },
         // { label: 'Country', name: 'country_id', required: true, type: 'select', options: [{ value: '1', label: 'India' }] },
         // { label: 'State', name: 'state_id', required: true, type: 'select', options: [{ value: '1', label: 'State1' }] },
         // { label: 'City', name: 'city_id', required: true, type: 'select', options: [{ value: '1', label: 'City1' }] },
-        { label: 'Address', name: 'address', required: true },
+        { label: 'Address', name: 'address', required: false },
 
         { label: 'Photo', name: 'image', type: 'file' }
       ]
@@ -129,78 +132,78 @@ const UserAdd = ({ editData, onSuccess }) => {
   ];
 
 
-const exportUserSample = () => {
- const excludeFields = { branch_id: true, image: true, role_id: true, password: true, username: true, gender_id: true}
-  const fields = columns
-    .flatMap(group => group.fields)
-    .filter(field => !excludeFields[field.name]); // Use name, not label
+  const exportUserSample = () => {
+    const excludeFields = { branch_id: true, image: true, role_id: true, password: true, username: true, gender_id: true }
+    const fields = columns
+      .flatMap(group => group.fields)
+      .filter(field => !excludeFields[field.name]); // Use name, not label
 
 
     // alert(JSON.stringify(fields, null, 2));
     // // alert(JSON.stringify(Object.keys(excludeFields)));
 
 
-  const headers = fields.map(f => f.label);
+    const headers = fields.map(f => f.label);
 
-  // const sampleRow = fields.reduce((acc, f) => {
-  //   if (f.type === 'select' && f.options?.length) {
-  //     acc[f.label] = f.options[0].label;
-  //   } else if (f.type === 'date') {
-  //     acc[f.label] = '2000-01-01';
-  //   } else {
-  //     acc[f.label] = '';
-  //   }
-  //   return acc;
-  // }, {});
+    // const sampleRow = fields.reduce((acc, f) => {
+    //   if (f.type === 'select' && f.options?.length) {
+    //     acc[f.label] = f.options[0].label;
+    //   } else if (f.type === 'date') {
+    //     acc[f.label] = '2000-01-01';
+    //   } else {
+    //     acc[f.label] = '';
+    //   }
+    //   return acc;
+    // }, {});
 
-  const ws = XLSX.utils.json_to_sheet([], { header: headers });
+    const ws = XLSX.utils.json_to_sheet([], { header: headers });
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "UserImport");
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "UserImport");
 
-  const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-  saveAs(blob, "user-import-sample.xlsx");
-};
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "user-import-sample.xlsx");
+  };
 
   const [excelData, setExcelData] = useState([]);
 
-const handleFileUpload = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const reader = new FileReader();
+    const reader = new FileReader();
 
-  reader.onload = (evt) => {
-    const data = new Uint8Array(evt.target.result);
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-    const json = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+    reader.onload = (evt) => {
+      const data = new Uint8Array(evt.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
-    const processedData = json.map(row => {
-      const newRow = { ...row };
-      if (newRow.dob && typeof newRow.dob === 'number') {
-        const date = XLSX.SSF.parse_date_code(newRow.dob);
-        if (date) {
-          const yyyy = date.y;
-          const mm = String(date.m).padStart(2, '0');
-          const dd = String(date.d).padStart(2, '0');
-          newRow.dob = `${yyyy}-${mm}-${dd}`;
+      const processedData = json.map(row => {
+        const newRow = { ...row };
+        if (newRow.dob && typeof newRow.dob === 'number') {
+          const date = XLSX.SSF.parse_date_code(newRow.dob);
+          if (date) {
+            const yyyy = date.y;
+            const mm = String(date.m).padStart(2, '0');
+            const dd = String(date.d).padStart(2, '0');
+            newRow.dob = `${yyyy}-${mm}-${dd}`;
+          }
         }
+        return newRow;
+      });
+
+
+      if (!processedData.length) {
+        alert("No valid data found in the Excel file.");
       }
-      return newRow;
-    });
+      setExcelData(processedData);
+    };
 
-
-    if(!processedData.length) {
-      alert("No valid data found in the Excel file.");  
-    }
-    setExcelData(processedData);
+    reader.readAsArrayBuffer(file);
   };
-
-  reader.readAsArrayBuffer(file);
-};
   // Handle input change
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -234,7 +237,10 @@ const handleFileUpload = (e) => {
   const handlePrev = () => {
     setStep((prev) => prev - 1);
   };
+  
 
+
+  
   // Handle form submit (final step)
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -246,6 +252,8 @@ const handleFileUpload = (e) => {
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== null && value !== undefined) form.append(key, value);
       });
+
+      form.append('permissions',JSON.stringify(finalPermission));
 
       let url = `${API_URL}/user`;
       let method = "POST";
@@ -305,9 +313,12 @@ const handleFileUpload = (e) => {
     }
   };
 
+ const handlePermissionChange = useCallback((permissions) => {
+    setFinalPermission(permissions);
+  }, []);
 
 
-const allFields = columns.flatMap(group => group.fields); // includes type, label, name
+  const allFields = columns.flatMap(group => group.fields); // includes type, label, name
   // Render fields for current step
   const renderFields = (fields) => (
     <div className="row">
@@ -361,65 +372,125 @@ const allFields = columns.flatMap(group => group.fields); // includes type, labe
   );
 
 
-const handleExcelSubmit = async (e) => {
-  e.preventDefault();
+  const handleExcelSubmit = async (e) => {
+    e.preventDefault();
 
-  const excelUsers = [...excelData]; // Your array of users
-  const chunkSize = 10;
-  const totalChunks = Math.ceil(excelUsers.length / chunkSize);
+    const excelUsers = [...excelData]; // Your array of users
+    const chunkSize = 10;
+    const totalChunks = Math.ceil(excelUsers.length / chunkSize);
 
-  try {
-    for (let i = 0; i < totalChunks; i++) {
-      const chunk = excelUsers.slice(i * chunkSize, (i + 1) * chunkSize);
+    try {
+      for (let i = 0; i < totalChunks; i++) {
+        const chunk = excelUsers.slice(i * chunkSize, (i + 1) * chunkSize);
 
-      const form = new FormData();
+        const form = new FormData();
 
-      // Attach chunk data as JSON string
-      form.append('users', JSON.stringify(chunk));
+        // Attach chunk data as JSON string
+        form.append('users', JSON.stringify(chunk));
 
-      // If any file exists in chunk, attach them separately
-      chunk.forEach((user, idx) => {
-        Object.entries(user).forEach(([key, value]) => {
-          if (value instanceof File) {
-            form.append(`file_${idx}_${key}`, value, value.name);
-          }
+        // If any file exists in chunk, attach them separately
+        chunk.forEach((user, idx) => {
+          Object.entries(user).forEach(([key, value]) => {
+            if (value instanceof File) {
+              form.append(`file_${idx}_${key}`, value, value.name);
+            }
+          });
         });
-      });
 
-      const response = await fetch(`${API_URL}/excelUpload/User`, {
+        const response = await fetch(`${API_URL}/excelUpload/User`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            // DO NOT set 'Content-Type', let browser handle it
+          },
+          body: form,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          setErrors(errorData.errors || {});
+          alert("Error uploading users: " + (errorData.message || "Unknown error"));
+          return;
+        }
+
+        console.log(`✅ Batch ${i + 1} uploaded successfully.`);
+      }
+
+      // Refresh user list after all uploads
+      dispatch(fetchUsersList({ API_URL, token }));
+      alert("🎉 All users uploaded successfully!");
+      navigate("/userView");
+
+    } catch (err) {
+      console.error("❌ Upload failed:", err);
+      alert("Unexpected error while uploading users.");
+    }
+  };
+
+
+  const [sidebarMenuFromAPI, setSidebarMenuFromAPI] = useState([]);
+  const [permissions, setPermissions] = useState([]);
+  const [menuLoading, setMenuLoading] = useState(false);
+  const [menuError, setMenuError] = useState(null);
+
+  const fetchMenusWithPermissions = async (token, user_id, role_id) => {
+    // Do not proceed if essential data is missing
+    if (!token) {
+      console.warn("Missing token");
+      return;
+    }
+
+    setMenuLoading(true);
+    setMenuError(null); // reset previous error
+
+    try {
+      const response = await fetch(`${API_URL}/menus/permissions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          // DO NOT set 'Content-Type', let browser handle it
+          "Content-Type": "application/json",
         },
-        body: form,
+        body: JSON.stringify({
+          user_id,
+          role_id,
+        }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setErrors(errorData.errors || {});
-        alert("Error uploading users: " + (errorData.message || "Unknown error"));
-        return;
+      const data = await response.json();
+
+      if (response.ok && data?.data) {
+        setSidebarMenuFromAPI(data.data);
+        setPermissions(data.permissions);
+      } else {
+        setMenuError(data?.message || "Failed to fetch menus");
+        setSidebarMenuFromAPI([]); // reset menu on failure
+        setPermissions([]);
       }
-
-      console.log(`✅ Batch ${i + 1} uploaded successfully.`);
+    } catch (error) {
+      console.error("Menu Fetch Error:", error);
+      setMenuError(error.message || "Unexpected error occurred");
+      setSidebarMenuFromAPI([]);
+      setPermissions([]);
+    } finally {
+      setMenuLoading(false);
     }
-
-    // Refresh user list after all uploads
-    dispatch(fetchUsersList({ API_URL, token }));
-    alert("🎉 All users uploaded successfully!");
-    navigate("/userView");
-
-  } catch (err) {
-    console.error("❌ Upload failed:", err);
-    alert("Unexpected error while uploading users.");
-  }
-};
+  };
 
 
-  //   useEffect(() => {
-  // console.log(excelData);
-  // }, [excelData]);
+
+  useEffect(() => {
+    // If both are missing, return early
+    if (!formData?.id && !formData?.role_id) return;
+
+
+    fetchMenusWithPermissions(token, formData?.id, formData?.role_id);
+  }, [formData?.id, formData?.role_id]);
+
+
+
+
+
+
   return (
     <div className="">
       {/* Breadcrumb */}
@@ -454,213 +525,221 @@ const handleExcelSubmit = async (e) => {
           <div className="row">
 
             {excelData.length === 0 && (
-            <div className="col-md-3 col-12 box d-flex align-items-center justify-content-center">
-              <div className="text-center py-4 w-100">
-                <AppImage category="png" name="xls" alt="Import Data" width={120} height={120} />
+              <div className="col-md-3 col-12 box d-flex align-items-center justify-content-center">
+                <div className="text-center py-4 w-100">
+                  <AppImage category="png" name="xls" alt="Import Data" width={120} height={120} />
 
-                <div className="custom-file mt-3 col-md-8 col-12 mx-auto">
-                  <input
-                    type="file"
-                    name="profile_photo"
-                    className="form-control bg-white"
-                    id="excelFile"
-                    accept=".xlsx, .xls"
-                    onChange={handleFileUpload}
-                  />
-                 
+                  <div className="custom-file mt-3 col-md-8 col-12 mx-auto">
+                    <input
+                      type="file"
+                      name="profile_photo"
+                      className="form-control bg-white"
+                      id="excelFile"
+                      accept=".xlsx, .xls"
+                      onChange={handleFileUpload}
+                    />
+
+                  </div>
+
+                  <small className="text-muted d-block mt-2">
+                    * Import users using .xls or .xlsx file
+                  </small>
+
+                  {columns && columns.length > 0 && (
+                    <button className="btn btn-xs btn-outline-secondary mt-3" onClick={exportUserSample}>
+                      Download Sample Excel
+                    </button>
+                  )}
                 </div>
-
-                <small className="text-muted d-block mt-2">
-                  * Import users using .xls or .xlsx file
-                </small>
-
-                {columns && columns.length > 0 && (
-                  <button className="btn btn-xs btn-outline-secondary mt-3" onClick={exportUserSample}>
-                    Download Sample Excel
-                  </button>
-                )}
               </div>
-            </div>
             )}
 
             {/* Form Section */}
 
             {!excelData.length > 0 && (
-            <div className="col-md-9 py-2" >
-              {/* Wizard Steps */}
-              <div className="wizard-steps d-flex justify-content-between position-relative mb-3">
-                <div className="wizard-step-indicator text-center flex-fill">
-                  <div className={`circle step-circle${step === 1 ? " active" : ""}`}>1</div>
-                  <small className="d-block">Basic Details</small>
+              <div className="col-md-9 py-2" >
+                {/* Wizard Steps */}
+                <div className="wizard-steps d-flex justify-content-between position-relative mb-3">
+                  <div className="wizard-step-indicator text-center flex-fill">
+                    <div className={`circle step-circle${step === 1 ? " active" : ""}`}>1</div>
+                    <small className="d-block">Basic Details</small>
+                  </div>
+                  <div className="wizard-step-indicator text-center flex-fill">
+                    <div className={`circle step-circle${step === 2 ? " active" : ""}`}>2</div>
+                    <small className="d-block">Additional Details</small>
+                  </div>
+                  <div className="wizard-step-indicator text-center flex-fill">
+                    <div className={`circle step-circle${step === 3 ? " active" : ""}`}>3</div>
+                    <small className="d-block">Permissions</small>
+                  </div>
+                  <div
+                    className="step-line position-absolute w-100"
+                    style={{
+                      top: "12px",
+                      left: "0",
+                      height: "2px",
+                      background: "#dee2e6",
+                      zIndex: 0,
+                    }}
+                  ></div>
                 </div>
-                <div className="wizard-step-indicator text-center flex-fill">
-                  <div className={`circle step-circle${step === 2 ? " active" : ""}`}>2</div>
-                  <small className="d-block">Additional Details</small>
-                </div>
-                <div className="wizard-step-indicator text-center flex-fill">
-                  <div className={`circle step-circle${step === 3 ? " active" : ""}`}>3</div>
-                  <small className="d-block">Permissions</small>
-                </div>
-                <div
-                  className="step-line position-absolute w-100"
-                  style={{
-                    top: "12px",
-                    left: "0",
-                    height: "2px",
-                    background: "#dee2e6",
-                    zIndex: 0,
-                  }}
-                ></div>
-              </div>
 
-              <form id="createCommon" encType="multipart/form-data" onSubmit={handleSubmit}>
-                <div className="card-body">
-                  <div className="bg-item border p-3 rounded">
-                    {/* Step 1: Basic Details */}
-                    {step === 1 && (
-                      <div id="step-1" className="wizard-step">
-                        <h5>
+                <form id="createCommon" encType="multipart/form-data" onSubmit={handleSubmit}>
+                  <div className="card-body">
+                    <div className="bg-item border p-3 rounded">
+                      {/* Step 1: Basic Details */}
+                      {step === 1 && (
+                        <div id="step-1" className="wizard-step">
+                          {/* <h5>
                           <i className="fa fa-user"></i> Basic Details
-                        </h5>
-                        {renderFields(columns[0].fields)}
-                      </div>
-                    )}
+                        </h5> */}
+                          {renderFields(columns[0].fields)}
+                        </div>
+                      )}
 
-                    {/* Step 2: Additional Details */}
-                    {step === 2 && (
-                      <div id="step-2" className="wizard-step">
-                        <h5>
+                      {/* Step 2: Additional Details */}
+                      {step === 2 && (
+                        <div id="step-2" className="wizard-step">
+                          {/* <h5>
                           <i className="fa fa-info-circle"></i> Additional Details
-                        </h5>
-                        {renderFields(columns[1].fields)}
-                      </div>
-                    )}
-
-                    {/* Step 3: Permissions */}
-                    {step === 3 && (
-                      <div id="step-3" className="wizard-step">
-                        <h5>
-                          <i className="fa fa-lock"></i> Permissions
-                        </h5>
-                        <pre>{JSON.stringify(formData, null, 2)}</pre>
-                      </div>
-                    )}
-
-                    {/* Wizard Navigation Buttons */}
-                    <div className="d-flex justify-content-between mt-4">
-                      {step > 1 && (
-                        <button type="button" className="btn btn-secondary" onClick={handlePrev}>
-                          Previous
-                        </button>
+                        </h5> */}
+                          {renderFields(columns[1].fields)}
+                        </div>
                       )}
-                      {step < 3 && (
-                        <button type="button" className="btn btn-primary ms-auto" onClick={handleNext}>
-                          Next
-                        </button>
-                      )}
+
+                      {/* Step 3: Permissions */}
                       {step === 3 && (
-                        <button type="submit" className="btn btn-success ms-auto">
-                          {editData || userFromList ? "Update" : "Submit"}
-                        </button>
+                        <div id="step-3" className="wizard-step">
+                          {/* <h5>
+                          <i className="fa fa-lock"></i> Permissions
+                        </h5> */}
+
+                          <AssignPermission
+                            sidebarMenu={sidebarMenuFromAPI}
+                            roleId={1}
+                            initialPermissions={permissions}
+                         handlePermissionChange ={handlePermissionChange}
+                          />
+
+                          {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
+                        </div>
                       )}
+
+                      {/* Wizard Navigation Buttons */}
+                      <div className="d-flex justify-content-between mt-4">
+                        {step > 1 && (
+                          <button type="button" className="btn btn-secondary" onClick={handlePrev}>
+                            Previous
+                          </button>
+                        )}
+                        {step < 3 && (
+                          <button type="button" className="btn btn-primary ms-auto" onClick={handleNext}>
+                            Next
+                          </button>
+                        )}
+                        {step === 3 && (
+                          <button type="submit" className="btn btn-success ms-auto">
+                            {editData || userFromList ? "Update" : "Submit"}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
+                </form>
+              </div>)}
+
+
+            {/* excel upload Section */}
+            {excelData.length > 0 && (
+              <div className={`p-3 ${excelData.length === 0 ? "col-md-9" : "col-md-12"}`}>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h5 className="mb-0">Imported User Data</h5>
+                  <button className="btn btn-sm btn-secondary" onClick={() => setExcelData([])}>
+                    ← Back to Form
+                  </button>
                 </div>
-              </form>
-            </div>)}
 
-
-         {/* excel upload Section */}
-{excelData.length > 0 && (
-  <div className={`p-3 ${excelData.length === 0 ? "col-md-9" : "col-md-12"}`}>
-    <div className="d-flex justify-content-between align-items-center mb-3">
-      <h5 className="mb-0">Imported User Data</h5>
-      <button className="btn btn-sm btn-secondary" onClick={() => setExcelData([])}>
-        ← Back to Form
-      </button>
-    </div>
-
-    <table className="table table-bordered table-striped table-responsive">
-      <thead className="table-primary">
-        <tr>
-      {allFields.map(field => (
-        <th key={field.name}>{field.label}</th>
-      ))}
-    </tr>
-      </thead>
-<tbody>
-  {excelData.map((row, rowIndex) => (
-    <tr key={rowIndex}>
-      {allFields.map((field, colIndex) => (
-        <td key={`${rowIndex}-${field.name}`}>
-          {field.type === 'select' ? (
-            <select
-              value={row[field.name] || ''}
-              onChange={(e) => {
-                const updated = [...excelData];
-                updated[rowIndex][field.name] = e.target.value;
-                setExcelData(updated);
-              }}
-              className="form-control"
-            >
-              <option value="">Select</option>
-              {field.options?.map(opt => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          ) : field.type === 'date' ? (
-            <input
-              type="date"
-              value={row[field.name] || ''}
-              onChange={(e) => {
-                const updated = [...excelData];
-                updated[rowIndex][field.name] = e.target.value;
-                setExcelData(updated);
-              }}
-              className="form-control"
-            />
-          ) : field.type === 'file' ? (
-            <input
-              type="file"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                const updated = [...excelData];
-                updated[rowIndex][field.name] = file; // store the File object
-                setExcelData(updated);
-              }}
-              className="form-control"
-            />
-          ) : (
-            <input
-              type="text"
-              value={row[field.name] || ''}
-              onChange={(e) => {
-                const updated = [...excelData];
-                updated[rowIndex][field.name] = e.target.value;
-                setExcelData(updated);
-              }}
-              className="form-control"
-            />
-          )}
-        </td>
-      ))}
-    </tr>
-  ))}
-</tbody>
-      <tfoot>
-        <tr>
-          <td colSpan={allFields.length} className="text-center" >
-            <button className="btn btn-sm btn-success" onClick={handleExcelSubmit}>
-              Submit Imported Users
-            </button>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-)}
+                <table className="table table-bordered table-striped table-responsive">
+                  <thead className="table-primary">
+                    <tr>
+                      {allFields.map(field => (
+                        <th key={field.name}>{field.label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {excelData.map((row, rowIndex) => (
+                      <tr key={rowIndex}>
+                        {allFields.map((field, colIndex) => (
+                          <td key={`${rowIndex}-${field.name}`}>
+                            {field.type === 'select' ? (
+                              <select
+                                value={row[field.name] || ''}
+                                onChange={(e) => {
+                                  const updated = [...excelData];
+                                  updated[rowIndex][field.name] = e.target.value;
+                                  setExcelData(updated);
+                                }}
+                                className="form-control"
+                              >
+                                <option value="">Select</option>
+                                {field.options?.map(opt => (
+                                  <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : field.type === 'date' ? (
+                              <input
+                                type="date"
+                                value={row[field.name] || ''}
+                                onChange={(e) => {
+                                  const updated = [...excelData];
+                                  updated[rowIndex][field.name] = e.target.value;
+                                  setExcelData(updated);
+                                }}
+                                className="form-control"
+                              />
+                            ) : field.type === 'file' ? (
+                              <input
+                                type="file"
+                                onChange={(e) => {
+                                  const file = e.target.files[0];
+                                  const updated = [...excelData];
+                                  updated[rowIndex][field.name] = file; // store the File object
+                                  setExcelData(updated);
+                                }}
+                                className="form-control"
+                              />
+                            ) : (
+                              <input
+                                type="text"
+                                value={row[field.name] || ''}
+                                onChange={(e) => {
+                                  const updated = [...excelData];
+                                  updated[rowIndex][field.name] = e.target.value;
+                                  setExcelData(updated);
+                                }}
+                                className="form-control"
+                              />
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colSpan={allFields.length} className="text-center" >
+                        <button className="btn btn-sm btn-success" onClick={handleExcelSubmit}>
+                          Submit Imported Users
+                        </button>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            )}
 
           </div>
           {/* End of row */}
