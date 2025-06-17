@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 // Fetch users by role ID
-export const fetchUsersByRole = async (rowData) => {
+export const fetchUsersByRole = async (rowData) => {    
   try {
     const response = await axios.post(`${API_URL}/getUsersData`, rowData);
     return response.data.data;
