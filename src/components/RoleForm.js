@@ -249,6 +249,7 @@ const RoleForm = ({ roleName, role, handleDispatch, token, user, roleId = null, 
         ? selectedIds.filter((item) => item !== id)
         : [...selectedIds, id];
       setSelectedIds(updatedIds);
+      
       // Update FormData
       const newFormData = new FormData();
       newFormData.append("selected_ids", JSON.stringify(updatedIds));

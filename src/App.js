@@ -22,6 +22,11 @@ import UserAdd from './components/UserAdd';
 import UserView from './components/UserView';
 import { fetchUsersList } from './redux/usersListSlice';
 import ExpensePage from './components/Expense/ExpensePage';
+import StudentAdd from './components/studentModule/StudentAdd';
+import StudentView from './components/studentModule/StudentView';
+import ClassPage from './components/master/ClassPage';
+import EventCalender from './components/master/EventCalender';
+import SubjectAdd from './components/master/SubjectAdd';
 
 function App() {
   return (
@@ -41,24 +46,24 @@ function MainApp() {
 
 
   const dispatch = useDispatch();
-  const { token ,selectedBranchId} = useContext(AppContext);
+  const { token, selectedBranchId } = useContext(AppContext);
   const API_URL = process.env.REACT_APP_BASE_URL || '';
-  
+
 
   useEffect(() => {
     if (token) {
-   
+
       const currentPath = location.pathname;
 
       // Prevent dispatching if already on /branches or /roles
-      if (!['/branch', '/role','/userView'].includes(currentPath)) {
+      if (!['/branch', '/role', '/userView'].includes(currentPath)) {
         dispatch(fetchBranches({ API_URL, token }));
         dispatch(fetchRoles({ API_URL, token }));
-        dispatch(fetchUsersList({ API_URL, token ,selectedBranchId}));
+        dispatch(fetchUsersList({ API_URL, token, selectedBranchId }));
       }
     }
     // eslint-disable-next-line
-  }, [token,selectedBranchId]);
+  }, [token, selectedBranchId]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -84,14 +89,19 @@ function MainApp() {
           >
             <Route path="Dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
             <Route path="branch" element={<ProtectedRoute element={<BranchPage />} />} />
-            <Route path="role" element={<ProtectedRoute element={<RolePage/>} />} />
-            <Route path="profile" element={<ProtectedRoute element={<ProfilePage/>} />} />
-            <Route path="userAdd" element={<ProtectedRoute element={<UserAdd/>} />} />
-            <Route path="userView" element={<ProtectedRoute element={<UserView/>} />} />
-            <Route path="expense" element={<ProtectedRoute element={<ExpensePage/>} />} />
-          </Route>
+            <Route path="role" element={<ProtectedRoute element={<RolePage />} />} />
+            <Route path="profile" element={<ProtectedRoute element={<ProfilePage />} />} />
+            <Route path="userAdd" element={<ProtectedRoute element={<UserAdd />} />} />
+            <Route path="userView" element={<ProtectedRoute element={<UserView />} />} />
+            <Route path="expense" element={<ProtectedRoute element={<ExpensePage />} />} />
+            <Route path="studentAdd" element={<ProtectedRoute element={<StudentAdd />} />} />
+            <Route path="studentView" element={<ProtectedRoute element={<StudentView />} />} />
+            <Route path="class" element={<ProtectedRoute element={<ClassPage />} />} />
+            <Route path="eventcalender" element={<ProtectedRoute element={<EventCalender />} />} />
+            <Route path="subjectAdd" element={<ProtectedRoute element={<SubjectAdd/>}/>}/>
+            </Route>
         )}
-      </Routes>
+          </Routes>
     </div>
   );
 }

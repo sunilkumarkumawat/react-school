@@ -11,6 +11,7 @@ import profilePropertyReducer from './profilePropertySlice';
 import rolesReducer from './rolesSlice';
 import branchesReducer from './branchSlice';
 import usersListReducer from './usersListSlice';
+import studentListReducer from './studentListSlice';
 import expensesReducer from './expensesSlice'; // Importing expenses slice
 
 const store = configureStore({
@@ -27,6 +28,7 @@ const store = configureStore({
     roles: rolesReducer,
     branches: branchesReducer,
     usersList: usersListReducer,
+    studentList: studentListReducer,
     expenses: expensesReducer, // Added expenses state
   },
 });

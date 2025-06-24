@@ -11,7 +11,7 @@ export const fetchUsersByRole = async (rowData) => {
     return { error: "Failed to fetch users" };
   }
 };
-export const fetchColumns = async (branchId, roleId,adminId) => {
+export const fetchColumns = async (branchId, roleId, adminId) => {
   try {
     const response = await axios.post(`${API_URL}/getColumns`, {
       role_id: roleId,

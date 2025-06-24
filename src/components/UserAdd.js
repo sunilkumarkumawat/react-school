@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect,useCallback } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import Input from "./common/Input";
 import { AppContext } from "../context/AppContext";
 import { validateFields } from '../utils/validation';
@@ -13,6 +13,7 @@ import { saveAs } from "file-saver";
 import AssignPermission from "./roleModule/AssignPermission";
 
 const UserAdd = ({ editData, onSuccess }) => {
+
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const { token } = useContext(AppContext);
@@ -24,7 +25,7 @@ const UserAdd = ({ editData, onSuccess }) => {
   const roleStatus = useSelector(state => state.roles.status);
   const branches = useSelector(state => state.branches.branches || []);
   const branchStatus = useSelector(state => state.branches.status);
-  const [finalPermission,setFinalPermission] = useState([]);
+  const [finalPermission, setFinalPermission] = useState([]);
   // Find user by id from usersListSlice if id param exists and no editData
   const idParam = searchParams.get("id");
   const userFromList = idParam && !editData
@@ -237,10 +238,10 @@ const UserAdd = ({ editData, onSuccess }) => {
   const handlePrev = () => {
     setStep((prev) => prev - 1);
   };
-  
 
 
-  
+
+
   // Handle form submit (final step)
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -252,9 +253,23 @@ const UserAdd = ({ editData, onSuccess }) => {
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== null && value !== undefined) form.append(key, value);
       });
+      
+      // const form = new FormData();
+      // Object.entries(formData).forEach(([key, value]) => {
+      //   let finalValue;
+      //   if (value === null || value === undefined) {
+      //     finalValue = "N/A"; // default value
+      //   } else {
+      //     finalValue = value;
+      //   }
+      //   console.log(`Appending ${key}:`, finalValue); // Debug log
+      //   form.append(key, finalValue);
+      // });
 
-      form.append('permissions',JSON.stringify(finalPermission));
 
+
+      form.append('permissions', JSON.stringify(finalPermission));
+      
       let url = `${API_URL}/user`;
       let method = "POST";
       if ((editData && editData.id) || (userFromList && userFromList.id)) {
@@ -313,7 +328,7 @@ const UserAdd = ({ editData, onSuccess }) => {
     }
   };
 
- const handlePermissionChange = useCallback((permissions) => {
+  const handlePermissionChange = useCallback((permissions) => {
     setFinalPermission(permissions);
   }, []);
 
@@ -618,7 +633,7 @@ const UserAdd = ({ editData, onSuccess }) => {
                             sidebarMenu={sidebarMenuFromAPI}
                             roleId={1}
                             initialPermissions={permissions}
-                         handlePermissionChange ={handlePermissionChange}
+                            handlePermissionChange={handlePermissionChange}
                           />
 
                           {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
