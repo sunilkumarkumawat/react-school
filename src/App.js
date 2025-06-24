@@ -27,6 +27,7 @@ import StudentView from './components/studentModule/StudentView';
 import ClassPage from './components/master/ClassPage';
 import EventCalender from './components/master/EventCalender';
 import SubjectAdd from './components/master/SubjectAdd';
+import AcademicCalendarView from './components/master/AcademicCalendarView';
 
 function App() {
   return (
@@ -99,6 +100,7 @@ function MainApp() {
             <Route path="class" element={<ProtectedRoute element={<ClassPage />} />} />
             <Route path="eventcalender" element={<ProtectedRoute element={<EventCalender />} />} />
             <Route path="subjectAdd" element={<ProtectedRoute element={<SubjectAdd/>}/>}/>
+            <Route path="academicCalendar" element={<ProtectedRoute element={<AcademicCalendarView/>}/>}/>
             </Route>
         )}
           </Routes>
