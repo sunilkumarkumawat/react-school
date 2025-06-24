@@ -253,7 +253,7 @@ const UserAdd = ({ editData, onSuccess }) => {
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== null && value !== undefined) form.append(key, value);
       });
-      
+
       // const form = new FormData();
       // Object.entries(formData).forEach(([key, value]) => {
       //   let finalValue;
@@ -269,7 +269,7 @@ const UserAdd = ({ editData, onSuccess }) => {
 
 
       form.append('permissions', JSON.stringify(finalPermission));
-      
+
       let url = `${API_URL}/user`;
       let method = "POST";
       if ((editData && editData.id) || (userFromList && userFromList.id)) {
@@ -333,8 +333,8 @@ const UserAdd = ({ editData, onSuccess }) => {
   }, []);
 
 
-    const allFields = columns.flatMap(group => group.fields); // includes type, label, name
-    // Render fields for current step
+  const allFields = columns.flatMap(group => group.fields); // includes type, label, name
+  // Render fields for current step
   const renderFields = (fields) => (
     <div className="row">
       {fields.map((col) => (

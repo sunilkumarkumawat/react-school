@@ -120,9 +120,9 @@ function AcademicCalendar({ year, month, monthData = [], apiUrl }) {
 
         const style = {
             border: '1px solid #ccc',
-            padding: '8px',
+            padding: '6px',
             cursor: 'pointer',
-            minHeight: '50px',
+            minHeight: '32px',
             backgroundColor: isSunday ? '#f0f0f0' : '#fff', // 🩶 Light grey for Sundays
         };
 
@@ -156,7 +156,7 @@ function AcademicCalendar({ year, month, monthData = [], apiUrl }) {
         // Disable interaction visuals
         if (isDateUsed(dateStr)) {
             style.pointerEvents = 'none';
-            style.opacity = 0.5;
+            style.opacity = 1;
         }
 
         return style;
@@ -203,17 +203,17 @@ function AcademicCalendar({ year, month, monthData = [], apiUrl }) {
     };
 
     const monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
-];
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
     return (
-        <div style={{ display: 'flex', gap: '30px' }}>
-            <div >
-                <h3>{`${monthNames[month]} - ${year}`}</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', fontWeight: 'bold' }}>
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => <div key={d}>{d}</div>)}
+        <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ border: '2px solid #ccd3da' }}>
+                <h3 className='bg-light text-center mb-0' style={{fontSize: '15px'}}>{`${monthNames[month]} - ${year}`}</h3>
+                <div className='text-center p-1' style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', fontWeight: 'bold', backgroundColor: 'rgb(255, 255, 255)', color: '#002C54', fontWeight: '700' }} >
+                    {['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa'].map(d => <div key={d}>{d}</div>)}
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '5px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
                     {[...Array(firstDayOfWeek)].map((_, i) => <div key={i}></div>)}
                     {days.map((dateObj) => {
                         const dateStr = dateObj.getFullYear() + '-' +
@@ -249,8 +249,8 @@ function AcademicCalendar({ year, month, monthData = [], apiUrl }) {
             </div>
 
             <div style={{ flex: 1 }}>
-                <h3>{`${monthNames[month]}`}</h3>
-                <table className='table table-striped' style={{ width: '100%', borderCollapse: 'collapse' }}>
+                {/* <h3>{`${monthNames[month]}`}</h3> */}
+                <table className='table table-striped table-bordered' style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ background: 'rgb(0, 44, 84)', color: 'white' }}>
                             <th>Sr No</th>

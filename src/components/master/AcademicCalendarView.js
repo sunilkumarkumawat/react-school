@@ -48,18 +48,57 @@ const AcademicCalendarView = () => {
 
   return (
 
-    <div className="container">
+    <div className="">
       <div className="row">
-        {[...Array(12)].map((_, monthIndex) => (
-          <div className="col-12 col-md-12 mb-4" key={monthIndex}>
-            <AcademicCalendar
-              year={2025}
-              month={monthIndex}
-              monthData={dummyEvents}
-              apiUrl="/your-api-url"
-            />
+        {/* Bread crumb */}
+        <div className="col-md-12 col-12">
+          <ul className="breadcrumb">
+            <li className="breadcrumb-item">
+              <a href="/dashboard">Dashboard</a>
+            </li>
+            <li className="breadcrumb-item">
+              Calendar
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div className='card card-orange card-outline'>
+        <div className='card-header bg-light'>
+          <div className='card-title'>
+            <h4><i class="fa-solid fa-calendar-plus"></i> &nbsp;Academic Calendar : 2024-2025</h4>
           </div>
-        ))}
+        </div>
+        <div className='card-body'>
+          <div className="row">
+            <div className='col-md-12 col-12'>
+              {/* <h3 className='text-center bg-light'>Rukmani Software School</h3> */}
+              {/* <h3 className='text-center' style={{ color: '#002C54', fontSize: '22px' }}>2024-2025 School Academic Calendar</h3> */}
+              <div className='row pt-2'>
+                <div className='form-group col-md-3'>
+                  <label>Year : &nbsp;
+                    <input type='text' placeholder='year' />
+                  </label>
+                </div>
+                <div className='form-group col-md-3'>
+                  <label>Start Day : &nbsp;
+                    <input type='text' placeholder='Day' />
+                  </label>
+                </div>
+              </div>
+            </div>
+            {[...Array(12)].map((_, monthIndex) => (
+              <div className="col-12 col-md-12 my-2" key={monthIndex}>
+                <AcademicCalendar
+                  year={2025}
+                  month={monthIndex}
+                  monthData={dummyEvents}
+                  apiUrl="/your-api-url"
+                />
+                <hr />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
