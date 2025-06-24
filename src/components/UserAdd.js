@@ -333,8 +333,8 @@ const UserAdd = ({ editData, onSuccess }) => {
   }, []);
 
 
-  const allFields = columns.flatMap(group => group.fields); // includes type, label, name
-  // Render fields for current step
+    const allFields = columns.flatMap(group => group.fields); // includes type, label, name
+    // Render fields for current step
   const renderFields = (fields) => (
     <div className="row">
       {fields.map((col) => (

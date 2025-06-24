@@ -71,8 +71,9 @@ const StudentView = () => {
   };
 
   const columns = [
-    { 
-      name: 'SR.NO', selector: row => row.srno, cell: (row, rowIndex) => row.srno, width: '70px' },
+    {
+      name: 'SR.NO', selector: row => row.srno, cell: (row, rowIndex) => row.srno, width: '70px'
+    },
     {
       name: 'Image',
       cell: row => row.image ? (
@@ -89,7 +90,11 @@ const StudentView = () => {
     { name: 'Mobile', selector: row => row.mobile, width: '150px' },
     { name: 'E-Mail', selector: row => row.email },
     { name: 'Gender', selector: row => row.gender },
-    { name: 'DOB', selector: row => formatDate(row.dob, "DD-MM-YYYY") },
+    {
+      name: 'DOB',
+      selector: row => row.dob ? formatDate(row.dob, "DD-MM-YYYY") : '-'
+    },
+
     {
       name: 'Status',
       cell: row => (
