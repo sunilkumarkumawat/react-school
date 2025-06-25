@@ -39,19 +39,20 @@ const FeesGroup = () => {
     }));
   };
 
+
+  const validateStep = async (fields) => {
+          const requiredFields = fields.filter(col => col.required).map(col => col.name);
+          const validationErrors = await validateFields(requiredFields, formData, token);
+          setErrors(validationErrors);
+        
+          return Object.keys(validationErrors).length === 0;
+        };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const requiredFields = columns
-      .filter((col) => col.required)
-      .map((col) => col.name);
+     if (!await validateStep(columns)) return;
 
-    const validationErrors = validateFields(requiredFields, formData);
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
 
     // Create updated formData with permissions
     const updatedFormData = {
