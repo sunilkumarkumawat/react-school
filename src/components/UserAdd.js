@@ -106,8 +106,8 @@ const UserAdd = ({ editData, onSuccess }) => {
       category: 'basic_details',
       fields: [
         { label: 'Branch', name: 'branch_id', required: false, type: 'select', options: branches.map(b => ({ value: b.id, label: b.name })) },
-        { label: 'Role', name: 'role_id', required: false, type: 'select', options: roles.map(r => ({ value: r.id, label: r.name })) },
-        { label: 'Name', name: 'name', required: false },
+        { label: 'Role', name: 'role_id', required: true, type: 'select', options: roles.map(r => ({ value: r.id, label: r.name })) },
+        { label: 'Name', name: 'name', required: true },
         { label: 'Mobile', name: 'mobile', required: false, pattern: '^[0-9]{10}$' },
         { label: 'Email', name: 'email', type: 'email', required: false },
         { label: 'Username', name: 'username', required: false },
@@ -221,7 +221,10 @@ const UserAdd = ({ editData, onSuccess }) => {
   // Validation for each step
   const validateStep = async (fields) => {
     const requiredFields = fields.filter(col => col.required).map(col => col.name);
+
+  
     const validationErrors = await validateFields(requiredFields, formData, token);
+   
     setErrors(validationErrors);
     return Object.keys(validationErrors).length === 0;
   };

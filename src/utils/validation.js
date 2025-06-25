@@ -1,12 +1,18 @@
 const API_URL = process.env.REACT_APP_BASE_URL || '';
 
 export const validateFields = async (fields, data, token) => {
+
+  console.log('Validating fields:', fields, data, token);
   const errors = {};
+
+
 
   for (const field of fields) {
     const value = data[field];
 
     switch (field) {
+
+     
       // Branch/Role/Other Common Required Fields
       case 'code':
       case 'role_id':

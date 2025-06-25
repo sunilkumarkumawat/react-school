@@ -48,19 +48,18 @@ const BranchPage = () => {
     }));
   };
 
+
+    const validateStep = async (fields) => {
+      const requiredFields = fields.filter(col => col.required).map(col => col.name);
+      const validationErrors = await validateFields(requiredFields, formData, token);
+      setErrors(validationErrors);
+    
+      return Object.keys(validationErrors).length === 0;
+    };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const requiredFields = columns
-      .filter(col => col.required)
-      .map(col => col.name);
-
-    const validationErrors = validateFields(requiredFields, formData);
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+    if (!await validateStep(columns)) return;
 
     const url = isEdit ? `${API_URL}/branch/${formData.id}` : `${API_URL}/branch`;
     const method = isEdit ? 'put' : 'post';
