@@ -28,7 +28,9 @@ import ClassPage from './components/master/ClassPage';
 import EventCalender from './components/master/EventCalender';
 import SubjectAdd from './components/master/SubjectAdd';
 import AcademicCalendarView from './components/master/AcademicCalendarView';
-import FeesGroup from './components/branchModule/FeesManagment/FeesGroup';
+import FeesGroup from './components/FeesManagment/FeesGroup';
+import FeesType from './components/FeesManagment/FeesType';
+import FeesMaster from './components/FeesManagment/FeesMaster';
 
 function App() {
   return (
@@ -103,6 +105,8 @@ function MainApp() {
             <Route path="subjectAdd" element={<ProtectedRoute element={<SubjectAdd/>}/>}/>
             <Route path="academicCalendar" element={<ProtectedRoute element={<AcademicCalendarView/>}/>}/>
             <Route path="feesGroup" element={<ProtectedRoute element={<FeesGroup/>}/>}/>
+            <Route path='feesType' element={<ProtectedRoute element={<FeesType/>}/>}/>
+            <Route path='feesMaster' element={<ProtectedRoute element={<FeesMaster/>}/>}/>
             </Route>
         )}
           </Routes>
