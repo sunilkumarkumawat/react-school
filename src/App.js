@@ -1,35 +1,41 @@
 // App.js
-import React, { useContext, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
-import { AppProvider, AppContext } from './context/AppContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './components/Login';
+import React, { useContext, useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import { AppProvider, AppContext } from "./context/AppContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./components/Login";
 
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import Dashboard from './components/Dashboard';
-import Layout from './components/Layout';
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import Dashboard from "./components/Dashboard";
+import Layout from "./components/Layout";
 
-import BranchPage from './components/branchModule/BranchPage';
-import RolePage from './components/roleModule/RolePage';
-import ProfilePage from './components/common/ProfilePage';
-import UserAdd from './components/UserAdd';
-import UserView from './components/UserView';
-import ExpensePage from './components/Expense/ExpensePage';
-import StudentAdd from './components/studentModule/StudentAdd';
-import StudentView from './components/studentModule/StudentView';
-import ClassPage from './components/master/ClassPage';
-import EventCalender from './components/master/EventCalender';
-import SubjectAdd from './components/master/SubjectAdd';
-import AcademicCalendarView from './components/master/AcademicCalendarView';
-import FeesGroup from './components/FeesManagment/FeesGroup';
-import FeesType from './components/FeesManagment/FeesType';
-import FeesMaster from './components/FeesManagment/FeesMaster';
-import ChatBox from './components/ChatBox';
+import BranchPage from "./components/branchModule/BranchPage";
+import RolePage from "./components/roleModule/RolePage";
+import ProfilePage from "./components/common/ProfilePage";
+import UserAdd from "./components/UserAdd";
+import UserView from "./components/UserView";
+import ExpensePage from "./components/Expense/ExpensePage";
+import StudentAdd from "./components/studentModule/StudentAdd";
+import StudentView from "./components/studentModule/StudentView";
+import ClassPage from "./components/master/ClassPage";
+import EventCalender from "./components/master/EventCalender";
+import SubjectAdd from "./components/master/SubjectAdd";
+import AcademicCalendarView from "./components/master/AcademicCalendarView";
+import FeesGroup from "./components/FeesManagment/FeesGroup";
+import FeesType from "./components/FeesManagment/FeesType";
+import FeesMaster from "./components/FeesManagment/FeesMaster";
+import ChatBox from "./components/ChatBox";
 
-import { useDispatch } from 'react-redux';
-import { fetchBranches } from './redux/branchSlice';
-import { fetchRoles } from './redux/rolesSlice';
-import { fetchUsersList } from './redux/usersListSlice';
+import { useDispatch } from "react-redux";
+import { fetchBranches } from "./redux/branchSlice";
+import { fetchRoles } from "./redux/rolesSlice";
+import { fetchUsersList } from "./redux/usersListSlice";
 
 import { messaging, getToken, onMessage } from "./firebase-messaging";
 
@@ -75,49 +81,75 @@ function App() {
 }
 
 function MainApp() {
-  const { user, theme, isAuthenticated, isSidebarCollapsed } = useContext(AppContext);
+  const { user, theme, isAuthenticated, isSidebarCollapsed } =
+    useContext(AppContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
   const { token, selectedBranchId } = useContext(AppContext);
-  const API_URL = process.env.REACT_APP_BASE_URL || '';
+  const API_URL = process.env.REACT_APP_BASE_URL || "";
 
-const handleNotificationPermission = async () => {
-  const permission = await Notification.requestPermission();
+ const handleFcmToken = async (id, fcmToken) => {
+  try {
+    const response = await fetch(`${API_URL}/saveFcmToken/${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fcm_token: fcmToken,
+      }),
+    });
 
-  if (permission === 'granted') {
-    console.log("🔓 Notification permission granted");
+    const data = await response.json(); // ✅ parse response
 
-    try {
-      const currentToken = await getToken(messaging, {
-        vapidKey: "BG9XARjfZLAJZavsp1rhcL_jXZ3_rrTAlZ4oeObdc_NQANsSnzUrXDpuhV4bd13yhFq5tT0i0mnTGRiCFKXhoRg", // Replace this
-      });
-
-      if (currentToken) {
-        console.log("✅ FCM Token:", currentToken);
-        // TODO: send this token to your backend
-      } else {
-        console.warn("⚠️ No token available");
-      }
-
-    } catch (error) {
-      console.error("❌ Error retrieving token:", error);
+    if (response.ok) {
+      console.log("✅ FCM Token Saved"); // ✅ correct
     }
-
-  } else if (permission === 'denied') {
-    alert("⚠️ You've blocked notifications. Please enable them from browser settings.");
-  } else {
-    alert(" i Notification permission was dismissed.");
+  } catch (error) {
+    console.error("FCM Token Error:", error);
   }
 };
+
+  const handleNotificationPermission = async () => {
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      console.log("🔓 Notification permission granted");
+
+      try {
+        const currentToken = await getToken(messaging, {
+          vapidKey:
+            "BG9XARjfZLAJZavsp1rhcL_jXZ3_rrTAlZ4oeObdc_NQANsSnzUrXDpuhV4bd13yhFq5tT0i0mnTGRiCFKXhoRg", // Replace this
+        });
+
+        if (currentToken) {
+          console.log("✅ FCM Token:", currentToken);
+          // TODO: send this token to your backend
+          handleFcmToken(user.id,currentToken);
+        } else {
+          console.warn("⚠️ No token available");
+        }
+      } catch (error) {
+        console.error("❌ Error retrieving token:", error);
+      }
+    } else if (permission === "denied") {
+      alert(
+        "⚠️ You've blocked notifications. Please enable them from browser settings."
+      );
+    } else {
+      alert(" i Notification permission was dismissed.");
+    }
+  };
 
   useEffect(() => {
     if (token) {
       const currentPath = location.pathname;
 
-      if (!['/branch', '/role', '/userView'].includes(currentPath)) {
+      if (!["/branch", "/role", "/userView"].includes(currentPath)) {
         dispatch(fetchBranches({ API_URL, token }));
         dispatch(fetchRoles({ API_URL, token }));
         dispatch(fetchUsersList({ API_URL, token, selectedBranchId }));
@@ -140,30 +172,81 @@ const handleNotificationPermission = async () => {
 
   return (
     <div className={theme}>
-<button onClick={handleNotificationPermission}>
-  Enable Notifications
-</button>
+      <button onClick={handleNotificationPermission}>
+        Enable Notifications
+      </button>
       <Routes>
         <Route path="/" element={<Login />} />
         {isAuthenticated && (
           <Route path="/" element={<Layout />}>
-            <Route path="Dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
-            <Route path="branch" element={<ProtectedRoute element={<BranchPage />} />} />
-            <Route path="role" element={<ProtectedRoute element={<RolePage />} />} />
-            <Route path="profile" element={<ProtectedRoute element={<ProfilePage />} />} />
-            <Route path="userAdd" element={<ProtectedRoute element={<UserAdd />} />} />
-            <Route path="userView" element={<ProtectedRoute element={<UserView />} />} />
-            <Route path="expense" element={<ProtectedRoute element={<ExpensePage />} />} />
-            <Route path="studentAdd" element={<ProtectedRoute element={<StudentAdd />} />} />
-            <Route path="studentView" element={<ProtectedRoute element={<StudentView />} />} />
-            <Route path="class" element={<ProtectedRoute element={<ClassPage />} />} />
-            <Route path="eventcalender" element={<ProtectedRoute element={<EventCalender />} />} />
-            <Route path="subjectAdd" element={<ProtectedRoute element={<SubjectAdd />} />} />
-            <Route path="academicCalendar" element={<ProtectedRoute element={<AcademicCalendarView />} />} />
-            <Route path="feesGroup" element={<ProtectedRoute element={<FeesGroup />} />} />
-            <Route path="feesType" element={<ProtectedRoute element={<FeesType />} />} />
-            <Route path="feesMaster" element={<ProtectedRoute element={<FeesMaster />} />} />
-            <Route path="chatBox" element={<ProtectedRoute element={<ChatBox />} />} />
+            <Route
+              path="Dashboard"
+              element={<ProtectedRoute element={<Dashboard />} />}
+            />
+            <Route
+              path="branch"
+              element={<ProtectedRoute element={<BranchPage />} />}
+            />
+            <Route
+              path="role"
+              element={<ProtectedRoute element={<RolePage />} />}
+            />
+            <Route
+              path="profile"
+              element={<ProtectedRoute element={<ProfilePage />} />}
+            />
+            <Route
+              path="userAdd"
+              element={<ProtectedRoute element={<UserAdd />} />}
+            />
+            <Route
+              path="userView"
+              element={<ProtectedRoute element={<UserView />} />}
+            />
+            <Route
+              path="expense"
+              element={<ProtectedRoute element={<ExpensePage />} />}
+            />
+            <Route
+              path="studentAdd"
+              element={<ProtectedRoute element={<StudentAdd />} />}
+            />
+            <Route
+              path="studentView"
+              element={<ProtectedRoute element={<StudentView />} />}
+            />
+            <Route
+              path="class"
+              element={<ProtectedRoute element={<ClassPage />} />}
+            />
+            <Route
+              path="eventcalender"
+              element={<ProtectedRoute element={<EventCalender />} />}
+            />
+            <Route
+              path="subjectAdd"
+              element={<ProtectedRoute element={<SubjectAdd />} />}
+            />
+            <Route
+              path="academicCalendar"
+              element={<ProtectedRoute element={<AcademicCalendarView />} />}
+            />
+            <Route
+              path="feesGroup"
+              element={<ProtectedRoute element={<FeesGroup />} />}
+            />
+            <Route
+              path="feesType"
+              element={<ProtectedRoute element={<FeesType />} />}
+            />
+            <Route
+              path="feesMaster"
+              element={<ProtectedRoute element={<FeesMaster />} />}
+            />
+            <Route
+              path="chatBox"
+              element={<ProtectedRoute element={<ChatBox />} />}
+            />
           </Route>
         )}
       </Routes>
