@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import Input from "../../common/Input";
-import { AppContext } from "../../../context/AppContext";
+import Input from "../common/Input";
+import { AppContext } from "../../context/AppContext";
 import axios from "axios";
-import { validateFields } from "../../../utils/validation";
+import { validateFields } from "../../utils/validation";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFeesGroups } from "../../../redux/feesGroupSlice";
-import ActionButton from "../../common/ActionButton";
+import { fetchFeesGroups } from "../../redux/feesGroupSlice";
+import ActionButton from "../common/ActionButton";
 
 const FeesGroup = () => {
   const columns = [{ label: "Name", name: "name", required: true }];
