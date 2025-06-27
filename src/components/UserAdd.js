@@ -11,6 +11,7 @@ import AppImage from "../utils/AppImage";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import AssignPermission from "./roleModule/AssignPermission";
+import ExcelUpload from "./common/ExcelUpload";
 
 const UserAdd = ({ editData, onSuccess }) => {
 
@@ -543,33 +544,34 @@ const UserAdd = ({ editData, onSuccess }) => {
           <div className="row">
 
             {excelData.length === 0 && (
-              <div className="col-md-3 col-12 box d-flex align-items-center justify-content-center">
-                <div className="text-center py-4 w-100">
-                  <AppImage category="png" name="xls" alt="Import Data" width={120} height={120} />
+              // <div className="col-md-3 col-12 box d-flex align-items-center justify-content-center">
+              //   <div className="text-center py-4 w-100">
+              //     <AppImage category="png" name="xls" alt="Import Data" width={120} height={120} />
 
-                  <div className="custom-file mt-3 col-md-8 col-12 mx-auto">
-                    <input
-                      type="file"
-                      name="profile_photo"
-                      className="form-control bg-white"
-                      id="excelFile"
-                      accept=".xlsx, .xls"
-                      onChange={handleFileUpload}
-                    />
+              //     <div className="custom-file mt-3 col-md-8 col-12 mx-auto">
+              //       <input
+              //         type="file"
+              //         name="profile_photo"
+              //         className="form-control bg-white"
+              //         id="excelFile"
+              //         accept=".xlsx, .xls"
+              //         onChange={handleFileUpload}
+              //       />
 
-                  </div>
+              //     </div>
 
-                  <small className="text-muted d-block mt-2">
-                    * Import users using .xls or .xlsx file
-                  </small>
+              //     <small className="text-muted d-block mt-2">
+              //       * Import users using .xls or .xlsx file
+              //     </small>
 
-                  {columns && columns.length > 0 && (
-                    <button className="btn btn-xs btn-outline-secondary mt-3" onClick={exportUserSample}>
-                      Download Sample Excel
-                    </button>
-                  )}
-                </div>
-              </div>
+              //     {columns && columns.length > 0 && (
+              //       <button className="btn btn-xs btn-outline-secondary mt-3" onClick={exportUserSample}>
+              //         Download Sample Excel
+              //       </button>
+              //     )}
+              //   </div>
+              // </div>
+              <ExcelUpload setExcelData={setExcelData} columns={columns} file={'UserImport'} fileName={'user-import-sample.xlsx'}/>
             )}
 
             {/* Form Section */}

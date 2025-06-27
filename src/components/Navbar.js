@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import AppImage from "../utils/AppImage";
 import { fetchBranches } from '../redux/branchSlice';
 import Cookies from 'js-cookie';
+import Breadcrumb from "./common/Breadcrumb";
 
 const Navbar = () => {
   const {
@@ -58,13 +59,17 @@ const Navbar = () => {
 
   return (
     <nav className="main-header navbar navbar-expand navbar-white navbar-light p-0">
-      <ul className="navbar-nav">
+      {/* <ul className="navbar-nav">
         <li className="nav-item ml-1">
           <button className="nav-link border-0" onClick={toggleSidebar} id="sidebarToggle">
             <i className="fa fa-bars"></i>
           </button>
         </li>
-      </ul>
+      </ul> */}
+<ul className="navbar-nav ml-3">
+
+      <Breadcrumb />
+</ul>
 
       <ul className="navbar-nav ml-auto d-flex align-items-center">
         {/* Student View Button */}
