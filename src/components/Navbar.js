@@ -6,7 +6,7 @@ import AppImage from "../utils/AppImage";
 import { fetchBranches } from '../redux/branchSlice';
 import Cookies from 'js-cookie';
 import Breadcrumb from "./common/Breadcrumb";
-
+import { messaging, getToken, onMessage } from "../firebase-messaging";
 const Navbar = () => {
   const {
     isSidebarCollapsed,
@@ -17,6 +17,8 @@ const Navbar = () => {
     selectedBranchId,
     setSelectedBranchId,
   } = useContext(AppContext);
+
+    const API_URL = process.env.REACT_APP_BASE_URL || "";
 
   const dispatch = useDispatch();
   const branches = useSelector(state => state.branches.branches || []);
@@ -57,6 +59,69 @@ const Navbar = () => {
     // Any additional logic for branch change can go here
   };
 
+
+   const handleNotificationPermission = async () => {
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      console.log("🔓 Notification permission granted");
+
+      try {
+        const currentToken = await getToken(messaging, {
+          vapidKey:
+            "BG9XARjfZLAJZavsp1rhcL_jXZ3_rrTAlZ4oeObdc_NQANsSnzUrXDpuhV4bd13yhFq5tT0i0mnTGRiCFKXhoRg", // Replace this
+        });
+
+        if (currentToken) {
+          console.log("✅ FCM Token:", currentToken);
+          // TODO: send this token to your backend
+          handleFcmToken(user.id,currentToken);
+        } else {
+          console.warn("⚠️ No token available");
+        }
+      } catch (error) {
+        console.error("❌ Error retrieving token:", error);
+      }
+    } else if (permission === "denied") {
+      alert(
+        "⚠️ You've blocked notifications. Please enable them from browser settings."
+      );
+    } else {
+      alert(" i Notification permission was dismissed.");
+    }
+  };
+
+
+  onMessage(messaging, (payload) => {
+  console.log("🔔 Foreground FCM received", payload);
+  alert(`${payload.notification.title}\n${payload.notification.body}`);
+});
+
+
+
+ const handleFcmToken = async (id, fcmToken) => {
+  try {
+    const response = await fetch(`${API_URL}/saveFcmToken/${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fcm_token: fcmToken,
+      }),
+    });
+
+    const data = await response.json(); // ✅ parse response
+
+    if (response.ok) {
+      console.log("✅ FCM Token Saved"); // ✅ correct
+    }
+  } catch (error) {
+    console.error("FCM Token Error:", error);
+  }
+};
+
   return (
     <nav className="main-header navbar navbar-expand navbar-white navbar-light p-0">
       {/* <ul className="navbar-nav">
@@ -73,6 +138,11 @@ const Navbar = () => {
 
       <ul className="navbar-nav ml-auto d-flex align-items-center">
         {/* Student View Button */}
+        <li className="nav-item mr-2">
+        <button onClick={handleNotificationPermission}>
+              Enable Notifications
+            </button>
+        </li>
         <li className="nav-item mr-2">
           <Link to="/studentView">
             <button type="button" className="btn btn-primary btn-head">

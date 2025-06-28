@@ -37,7 +37,7 @@ import { fetchBranches } from "./redux/branchSlice";
 import { fetchRoles } from "./redux/rolesSlice";
 import { fetchUsersList } from "./redux/usersListSlice";
 
-import { messaging, getToken, onMessage } from "./firebase-messaging";
+
 
 function App() {
   // useEffect(() => {
@@ -91,59 +91,8 @@ function MainApp() {
   const { token, selectedBranchId } = useContext(AppContext);
   const API_URL = process.env.REACT_APP_BASE_URL || "";
 
- const handleFcmToken = async (id, fcmToken) => {
-  try {
-    const response = await fetch(`${API_URL}/saveFcmToken/${id}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        fcm_token: fcmToken,
-      }),
-    });
 
-    const data = await response.json(); // ✅ parse response
-
-    if (response.ok) {
-      console.log("✅ FCM Token Saved"); // ✅ correct
-    }
-  } catch (error) {
-    console.error("FCM Token Error:", error);
-  }
-};
-
-  const handleNotificationPermission = async () => {
-    const permission = await Notification.requestPermission();
-
-    if (permission === "granted") {
-      console.log("🔓 Notification permission granted");
-
-      try {
-        const currentToken = await getToken(messaging, {
-          vapidKey:
-            "BG9XARjfZLAJZavsp1rhcL_jXZ3_rrTAlZ4oeObdc_NQANsSnzUrXDpuhV4bd13yhFq5tT0i0mnTGRiCFKXhoRg", // Replace this
-        });
-
-        if (currentToken) {
-          console.log("✅ FCM Token:", currentToken);
-          // TODO: send this token to your backend
-          handleFcmToken(user.id,currentToken);
-        } else {
-          console.warn("⚠️ No token available");
-        }
-      } catch (error) {
-        console.error("❌ Error retrieving token:", error);
-      }
-    } else if (permission === "denied") {
-      alert(
-        "⚠️ You've blocked notifications. Please enable them from browser settings."
-      );
-    } else {
-      alert(" i Notification permission was dismissed.");
-    }
-  };
+ 
 
   useEffect(() => {
     if (token) {
@@ -172,9 +121,7 @@ function MainApp() {
 
   return (
     <div className={theme}>
-      <button onClick={handleNotificationPermission}>
-        Enable Notifications
-      </button>
+    
       <Routes>
         <Route path="/" element={<Login />} />
         {isAuthenticated && (
