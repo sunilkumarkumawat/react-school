@@ -179,3 +179,33 @@ export const handleStatusChangeRequest = async ({
     onError(error);
   }
 };
+
+export const firebaseMessage = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/getFcmToken`);
+
+    const fcmTokens = response.data.tokens;
+
+    if (!fcmTokens || fcmTokens.length === 0) {
+      console.error("No FCM tokens found");
+      return;
+    }
+
+    const payload = {
+      text: 'Hello from Postman prashant',
+      senderId: 'admin123',
+      schoolId: 'school_001',
+      receiverType: 'all',
+      fcmTokens: fcmTokens
+    };
+
+    // const sendResponse = await axios.post(`${API_URL}/sendFirebaseMessage`, payload);
+    const sendResponse = await axios.post('https://socket.rusofterp.in/api/chat/send', payload);
+
+    console.log("Message sent:", sendResponse.data);
+    return sendResponse.data;
+  } catch (error) {
+    console.error("Error in firebaseMessage:", error);
+    return { status: 'error', message: error.message };
+  }
+};

@@ -6,7 +6,8 @@ import AppImage from "../utils/AppImage";
 import { fetchBranches } from '../redux/branchSlice';
 import Cookies from 'js-cookie';
 import Breadcrumb from "./common/Breadcrumb";
-import { messaging, getToken, onMessage } from "../firebase-messaging";
+import { getToken, onMessage } from 'firebase/messaging';
+import { messaging } from '../firebase-messaging';
 const Navbar = () => {
   const {
     isSidebarCollapsed,
