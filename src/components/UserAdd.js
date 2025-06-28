@@ -12,6 +12,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import AssignPermission from "./roleModule/AssignPermission";
 import ExcelUpload from "./common/ExcelUpload";
+import { firebaseMessage } from "../api/apiHelper";
 
 const UserAdd = ({ editData, onSuccess }) => {
 
@@ -296,11 +297,13 @@ const UserAdd = ({ editData, onSuccess }) => {
         return;
       }
 
+     
       // Update users list in redux after add/update
       dispatch(fetchUsersList({ API_URL, token }));
 
       if (onSuccess) onSuccess();
       if (!(editData || userFromList)) {
+       
         if (window.confirm("User saved successfully!\n\nDo you want to add another user?\nPress Cancel to go to View page.")) {
           setFormData({
             name: "",
@@ -319,6 +322,7 @@ const UserAdd = ({ editData, onSuccess }) => {
             branch_id: "",
             image: null,
           });
+            firebaseMessage();
           setStep(1);
         } else {
           navigate("/userView");
