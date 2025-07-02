@@ -14,6 +14,7 @@ import usersListReducer from './usersListSlice';
 import studentListReducer from './studentListSlice';
 import expensesReducer from './expensesSlice'; // Importing expenses slice
 import feesGroupsReducer  from './feesGroupSlice';
+import feesTypesReducer  from './feesTypeSlice';
 
 const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ const store = configureStore({
     studentList: studentListReducer,
     expenses: expensesReducer, // Added expenses state
     feesGroups: feesGroupsReducer, // Added expenses state
+    feesTypes: feesTypesReducer, // Added expenses state
   },
 });
 

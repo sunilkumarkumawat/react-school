@@ -16,6 +16,7 @@ const Input = ({
     </label>
     <input
       type={type}
+      placeholder={label}
       className={`form-control ${error ? 'is-invalid' : ''}`}
       name={name}
       value={value}

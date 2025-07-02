@@ -1,215 +1,268 @@
-import { gridLayer } from 'leaflet';
-import React, { useState } from 'react';
+import { gridLayer } from "leaflet";
+import React, { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFeesGroups } from "../../redux/feesGroupSlice";
+import { AppContext } from "../../context/AppContext";
+import { fetchFeesTypes } from "../../redux/feesTypeSlice";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const FeesMaster = () => {
-    const [selectedClasses, setSelectedClasses] = useState([]);
-    const [selectedGroups, setSelectedGroups] = useState([]);
-    const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
+  const dispatch = useDispatch();
+  const { token } = useContext(AppContext);
+  const API_URL = process.env.REACT_APP_BASE_URL || "";
 
-    const classes = [
-        { id: 1, name: 'Class 1' },
-        { id: 2, name: 'Class 2' },
-        { id: 3, name: 'Class 3' },
-        { id: 4, name: 'Class 4' },
-    ];
+  const feesGroups = useSelector((state) => state.feesGroups.feesGroups || []);
+  const feesTypes = useSelector((state) => state.feesTypes.feesTypes || []);
 
-    const feeGroups = {
-        1: [{ id: 'g1', name: 'Group A' }, { id: 'g2', name: 'Group B' }],
-        2: [{ id: 'g3', name: 'Group C' }],
-        3: [{ id: 'g4', name: 'Group D' }],
-    };
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
+  const [feesMasterData, setFeesMasterData] = useState([]);
 
-    const feeTypes = {
-        g1: [{ id: 't1', type: 'Tuition', amount: 10000, due: '2025-07-01' }],
-        g2: [{ id: 't2', type: 'Transport', amount: 2000, due: '2025-07-10' }],
-        g3: [{ id: 't3', type: 'Books', amount: 1500, due: '2025-07-05' }],
-        g4: [
-            { id: 't4', type: 'Exam', amount: 1000, due: '2025-07-15' },
-            { id: 't5', type: 'Sports', amount: 500, due: '2025-08-01' }
-        ]
-    };
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchFeesGroups({ API_URL, token }));
+      dispatch(fetchFeesTypes({ API_URL, token }));
+    }
+  }, [token, API_URL, dispatch]);
 
-    const toggleClass = (id) => {
-        setSelectedGroups([]);
-        setSelectedFeeTypes([]);
-        setSelectedClasses((prev) =>
-            prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
-        );
-    };
+  const classes = [
+    { id: 1, name: "Class 1" },
+    { id: 2, name: "Class 2" },
+    { id: 3, name: "Class 3" },
+    { id: 4, name: "Class 4" },
+    { id: 5, name: "Class 5" },
+  ];
 
-    const toggleGroup = (id) => {
-        setSelectedFeeTypes([]);
-        setSelectedGroups((prev) =>
-            prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]
-        );
-    };
+  const handleClassSelect = (classItem) => {
+    setSelectedClass(classItem);
+    setSelectedGroups([]);
+    setSelectedFeeTypes([]);
+  };
 
-    const toggleFeeType = (id) => {
-        setSelectedFeeTypes((prev) =>
-            prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]
-        );
-    };
+  const handleFeesGroupCheckbox = (groupItem) => {
+    const isSelected = selectedGroups.some((g) => g.id === groupItem.id);
+    let updatedGroups;
 
-    return (
-        <div className="">
-            <div className='row'>
-                <div className='col-md-12 col-12'>
-                    <ul className='breadcrumb'>
-                        <li className='breadcrumb-item'>
-                            <a href='/dashboard'>Dashboard</a>
-                        </li>
-                        <li className='breadcrumb-item'>Fees Master</li>
-                    </ul>
-                </div>
-            </div>
+    if (isSelected) {
+      updatedGroups = selectedGroups.filter((g) => g.id !== groupItem.id);
+    } else {
+      updatedGroups = [...selectedGroups, groupItem];
+    }
 
-            <div className="row g-3">
-                {/* Box 1: Class List */}
-                <div className="col-md-12 p-0">
-                    <div className="card ">
-                        <div className="card-header bg-light">
-                            <h5><i className="fa fa-school text-info"></i> Select Classes</h5>
-                        </div>
-                        <div className="card-body" style={{ backgroundColor: '#f4f4f4' }}>
-                            <div className='row'>
-                                <div className='col-3 border bg-white ' style={{ boxShadow: '0px 1px 2px 2px white' }}>
-                                    <div className=''>
-                                        {selectedClasses.length === 0 && (
-                                            <p className="text-muted p-1 mb-1">Select class</p>
-                                        )}
-                                        <div style={{ display: 'grid', paddingLeft: '0px' }} className='px-2'>
-                                            <h5 className='mb-1' style={{ borderBottom: "1px " }}>Class 1</h5>
-                                            <h5 className='mb-1' style={{ borderBottom: "1px " }}>Class 2</h5>
-                                            <h5 className='mb-1' style={{ borderBottom: "1px " }}>Class 3</h5>
-                                            <h5 className='mb-1' style={{ borderBottom: "1px " }}>Class 4</h5>
-                                            <h5 className='mb-1' style={{ borderBottom: "1px " }}>Class 5</h5>
-                                        </div>
-                                    </div>
-                                    {/* <ul className="list-group">
-                                        {classes.map(cls => (
-                                            <li
-                                                key={cls.id}
-                                                className={`list-group-item p-1 border ${selectedClasses.includes(cls.id) ? 'active' : ''}`}
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => toggleClass(cls.id)}
-                                            >
-                                                {cls.name}
-                                            </li>
-                                        ))}
-                                    </ul> */}
-                                </div>
-                                <div className='col-4  bg-white' style={{ boxShadow: '0px 1px 2px 2px white' }}>
-                                    <div className='border'>
-                                        {selectedClasses.length === 0 && (
-                                            <p className="text-muted p-1 mb-1">Select classes to view groups</p>
-                                        )}
+    setSelectedGroups(updatedGroups);
 
-                                        <div style={{ display: 'grid', paddingLeft: '7px' }}>
-                                            <h4>Class 1</h4>
-                                            <label>
-                                                <input type='checkbox' /> &nbsp;
-                                                Admission Fees
-                                            </label>
-                                        </div>
-
-                                    </div>
-                                    {/* {selectedClasses.map(clsId => (
-                                        <div key={clsId} className="mb-3">
-                                            <h6 className="fw-bold">{classes.find(c => c.id === clsId)?.name}</h6>
-                                            <ul className="list-group">
-                                                {(feeGroups[clsId] || []).map(group => (
-                                                    <li key={group.id} className="list-group-item">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="form-check-input me-2"
-                                                            checked={selectedGroups.includes(group.id)}
-                                                            onChange={() => toggleGroup(group.id)}
-                                                            id={`group-${group.id}`}
-                                                        />
-                                                        <label htmlFor={`group-${group.id}`}>
-                                                            {group.name}
-                                                        </label>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ))} */}
-                                </div>
-                                <div className='col-4 shadow-sm'>
-
-                                    <div>
-                                        {selectedGroups.length === 0 && (
-                                            <p className="text-muted">Select groups to view fee types</p>
-                                        )}
-                                        <label className='align-center'>
-                                            <input type='checkbox' /> &nbsp;
-                                            1st Installment
-                                        </label>
-                                    </div>
-                                    {/* {selectedGroups.map(groupId => (
-                                        <div key={groupId} className="mb-3">
-                                            <h6 className="fw-bold">{feeGroups[selectedClasses.find(clsId =>
-                                                (feeGroups[clsId] || []).some(g => g.id === groupId)
-                                            )]?.find(g => g.id === groupId)?.name}</h6>
-                                            <ul className="list-group">
-                                                {(feeTypes[groupId] || []).map(fee => (
-                                                    <li key={fee.id} className="list-group-item">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="form-check-input me-2"
-                                                            checked={selectedFeeTypes.includes(fee.id)}
-                                                            onChange={() => toggleFeeType(fee.id)}
-                                                            id={`type-${fee.id}`}
-                                                        />
-                                                        <label htmlFor={`type-${fee.id}`}>
-                                                            {fee.type} – ₹{fee.amount} (Due: {fee.due})
-                                                        </label>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ))} */}
-                                </div>
-                            </div>
-                            {/* </div> */}
-                            {/* </div> */}
-                            {/* </div> */}
-
-                            {/* Box 2: Fee Groups */}
-                            {/* <div className="col-md-4 p-0"> */}
-                            {/* <div className="card "> */}
-                            {/* <div className="card-header bg-light">
-                                    <h5><i className="fa fa-layer-group text-warning"></i> Fee Groups</h5>
-                                </div>
-                                <div className="card-body"> */}
-
-
-
-
-
-
-                            {/* </div> */}
-                            {/* </div> */}
-                            {/* </div> */}
-
-                            {/* Box 3: Fee Types */}
-                            {/* <div className="col-md-4 p-0"> */}
-                            {/* <div className="card"> */}
-                            {/* <div className="card-header bg-light">
-                                    <h5><i className="fa fa-file-invoice-dollar text-success"></i> Fee Types</h5>
-                                </div>
-                                <div className="card-body"> */}
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        //     </div>
-        // </div>
+    // Keep only types that match updated groups
+    const updatedGroupIds = updatedGroups.map((g) => g.id);
+    const filteredTypes = selectedFeeTypes.filter((type) =>
+      updatedGroupIds.includes(type.fees_group_id)
     );
+    setSelectedFeeTypes(filteredTypes);
+  };
+
+  const handleFeesTypeCheckbox = (typeItem) => {
+    const exists = selectedFeeTypes.find((t) => t.id === typeItem.id);
+    if (exists) {
+      setSelectedFeeTypes(selectedFeeTypes.filter((t) => t.id !== typeItem.id));
+    } else {
+      setSelectedFeeTypes([
+        ...selectedFeeTypes,
+        {
+          ...typeItem,
+          amount: "",
+          due_date: "",
+        },
+      ]);
+    }
+  };
+  const handleSave = () => {
+    if (
+      !selectedClass ||
+      selectedGroups.length === 0 ||
+      selectedFeeTypes.length === 0
+    ) {
+      alert("Please select class, fee group(s), and fee type(s)");
+      return;
+    }
+
+    const newEntry = {
+      class_id: selectedClass.id,
+      class_name: selectedClass.name,
+      groups: selectedGroups.map((g) => ({ id: g.id, name: g.name })),
+      types: selectedFeeTypes.map((t) => ({ id: t.id, name: t.name })),
+    };
+
+    setFeesMasterData((prev) => [...prev, newEntry]);
+
+    // Reset selections
+    setSelectedClass(null);
+    setSelectedGroups([]);
+    setSelectedFeeTypes([]);
+  };
+  const updateFeeTypeDetail = (id, field, value) => {
+    const updated = selectedFeeTypes.map((t) =>
+      t.id === id ? { ...t, [field]: value } : t
+    );
+    setSelectedFeeTypes(updated);
+  };
+  const selectedGroupIds = selectedGroups.map((g) => Number(g.id));
+
+  const filteredFeesTypes = feesTypes.filter((type) =>
+    selectedGroupIds.includes(Number(type.fees_group_id))
+  );
+  // alert(JSON.stringify(filteredFeesTypes));
+  return (
+    <div className="row g-3">
+      <div className="col-md-12 p-0">
+        <div className="card">
+          <div className="card-header bg-primary text-white">
+            <h5 className="mb-0">
+              <i className="fa fa-user-shield"></i> Fees Master
+            </h5>
+          </div>
+          <div className="card-body">
+            <div className="row">
+              {/* Class Selection */}
+              <div className="col-md-3 col-12">
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <h5 className="text-gray-600 mb-3 text-sm font-medium">
+                    Select Class
+                  </h5>
+                  {classes.map((classItem) => (
+                    <div
+                      key={classItem.id}
+                      onClick={() => handleClassSelect(classItem)}
+                      className={`p-2 mb-2 border rounded cursor-pointer ${
+                        selectedClass?.id === classItem.id
+                          ? "bg-primary text-white fw-medium"
+                          : "bg-light text-dark"
+                      }`}
+                    >
+                      <h6 className="mb-0">{classItem.name}</h6>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fee Group Selection */}
+              <div className="col-md-3 col-12">
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <h5 className="text-gray-600 mb-3 text-sm font-medium">
+                    Select Fee Groups
+                  </h5>
+                  {feesGroups.map((groupItem) => (
+                    <div className="form-check mb-2" key={groupItem.id}>
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={selectedGroups.some(
+                          (g) => g.id === groupItem.id
+                        )}
+                        onChange={() => handleFeesGroupCheckbox(groupItem)}
+                        id={`group-${groupItem.id}`}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`group-${groupItem.id}`}
+                      >
+                        {groupItem.name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fee Type Selection */}
+              <div className="col-md-6 col-12">
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <h5 className="text-gray-600 mb-3 text-sm font-medium">
+                    Select Fee Types
+                  </h5>
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Select</th>
+                        <th>Type Name</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredFeesTypes.map((typeItem) => {
+                        const selected =
+                          selectedFeeTypes.find((t) => t.id === typeItem.id) ||
+                          {};
+                        return (
+                          <tr key={typeItem.id}>
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={!!selected.id}
+                                onChange={() =>
+                                  handleFeesTypeCheckbox(typeItem)
+                                }
+                              />
+                            </td>
+                            <td>{typeItem.name}</td>
+                            <td>
+                              <input
+                                type="number"
+                                className="form-control"
+                                value={selected.amount || ""}
+                                onChange={(e) =>
+                                  updateFeeTypeDetail(
+                                    typeItem.id,
+                                    "amount",
+                                    e.target.value
+                                  )
+                                }
+                                disabled={!selected.id}
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="date"
+                                className="form-control"
+                                value={selected.due_date || ""}
+                                onChange={(e) =>
+                                  updateFeeTypeDetail(
+                                    typeItem.id,
+                                    "due_date",
+                                    e.target.value
+                                  )
+                                }
+                                disabled={!selected.id}
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="mt-4">
+              <button className="btn btn-success" onClick={handleSave}>
+                Save
+              </button>
+            </div>
+
+            {/* Show Saved Data */}
+            {feesMasterData.length > 0 && (
+              <div className="mt-4">
+                <h5>Saved Entries:</h5>
+                <pre>{JSON.stringify(feesMasterData, null, 2)}</pre>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default FeesMaster;
