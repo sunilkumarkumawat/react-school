@@ -36,6 +36,7 @@ import { useDispatch } from "react-redux";
 import { fetchBranches } from "./redux/branchSlice";
 import { fetchRoles } from "./redux/rolesSlice";
 import { fetchUsersList } from "./redux/usersListSlice";
+import CollectFees from "./components/FeesManagment/CollectFees";
 
 
 
@@ -194,6 +195,11 @@ function MainApp() {
               path="chatBox"
               element={<ProtectedRoute element={<ChatBox />} />}
             />
+            <Route
+              path="collectFees"
+              element={<ProtectedRoute element={<CollectFees />} />}
+            />
+           
           </Route>
         )}
       </Routes>
