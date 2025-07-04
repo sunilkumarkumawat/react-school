@@ -25,6 +25,14 @@ const CollectFees = () => {
         { type: 'Admission Fee', amount: 2100, discount: 0, paid: 1000, paidFine: '₹ 0.00', pending: '₹ 1100', dueDate: '', fine: '₹ 0' }
     ];
 
+    const payment = [
+        { type: 'Admission Fee', receipt: 2234, amount: 9000, discount: 0, paidFine: '₹ 0.00', mode: 'Online', bankname: 'sbi', transictionid: '1234567', status: 'received' },
+        { type: 'Admission Fee', receipt: 2234, amount: 9000, discount: 0, paidFine: '₹ 0.00', mode: 'Online', bankname: 'sbi', transictionid: '1234567', status: 'received' },
+        { type: 'Admission Fee', receipt: 2234, amount: 9000, discount: 0, paidFine: '₹ 0.00', mode: 'Online', bankname: 'sbi', transictionid: '1234567', status: 'received' },
+        { type: 'Admission Fee', receipt: 2234, amount: 9000, discount: 0, paidFine: '₹ 0.00', mode: 'Online', bankname: 'sbi', transictionid: '1234567', status: 'received' }
+    ];
+
+
     const filteredStudents = students.filter(student =>
         student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.id.toString().includes(searchTerm)
@@ -72,7 +80,7 @@ const CollectFees = () => {
         status: 'Payment Received',
         total: 0,
         fine: 0,
-        date: new Date().toISOString().substr(0, 10), // Default to today's date
+        date: new Date().toISOString(), // Default to today's date
         remark: ''
     });
 
@@ -141,102 +149,102 @@ const CollectFees = () => {
                     </div>
                 </form>
                 {/* Student Table */}
-                
-                    <div className='row mt-3'>
-                        <div className='col-md-7'>
-                            <div className='card '>
-                                <div className='card-header bg-light'>
-                                    <h4>Student list</h4>
-                                </div>
-                                <div className='card-body'>
-                                    <div className="table-responsive " style={{ maxHeight: '225px' }}>
-                                        <table className="table table-hover mb-0 table-bordered">
-                                            <thead className="bg-light text-white" style={{ position: 'sticky', top: '0' }}>
-                                                <tr>
-                                                    <th>Admission No.</th>
-                                                    <th>Student Name</th>
-                                                    <th>Class</th>
-                                                    <th>Mobile</th>
-                                                    <th>Fee Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {filteredStudents.map((student, index) => (
-                                                    <tr key={index}>
-                                                        <td className="fw-bold text-primary">{student.id}</td>
-                                                        <td>
-                                                            <div className="d-flex align-items-center">
-                                                                <div className="bg-warning rounded-circle d-flex align-items-center justify-content-center mr-2"
-                                                                    style={{ width: '25px', height: '25px' }}>
-                                                                    <User size={16} className="text-white" />
-                                                                </div>
-                                                                {student.name}
-                                                            </div>
-                                                        </td>
-                                                        <td><span className="badge bg-secondary">{student.class}</span></td>
-                                                        <td>
-                                                            <Phone size={14} className="me-1" /> &nbsp;
-                                                            {student.mobile}
-                                                        </td>
-                                                        <td>
-                                                            <span className="badge bg-success">Paid</span> &nbsp;
-                                                            <span className="badge bg-warning ms-1">₹1100 Due</span>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        {/* student profile */}
-                        <div className='col-md-5' >
-                            <div className='card'>
-                                <div className='card-header bg-light'>
-                                    <h4>Student Profile</h4>
-                                </div>
-                                <div className='card-body'>
-                                    <div className="table-responsive border">
-                                        <table className="table table-bordered align-middle mb-0">
-                                            <tbody>
-                                                <tr>
-                                                    <td rowSpan="5" className="text-center" style={{ width: '150px' }}>
-                                                        <img
-                                                            src="https://cdn-icons-png.flaticon.com/512/145/145867.png"
-                                                            alt="Student"
-                                                            className="img-fluid"
-                                                            style={{ maxHeight: '120px', backgroundColor: '#ffc107', padding: '10px' }}
-                                                        />
+                <div className='row mt-3'>
+                    <div className='col-md-7'>
+                        <div className='card '>
+                            <div className='card-header bg-light'>
+                                <h4>Student list</h4>
+                            </div>
+                            <div className='card-body'>
+                                <div className="table-responsive " style={{ maxHeight: '225px' }}>
+                                    <table className="table table-hover mb-0 table-bordered">
+                                        <thead className="bg-light text-white" style={{ position: 'sticky', top: '0' }}>
+                                            <tr>
+                                                <th>Admission No.</th>
+                                                <th>Student Name</th>
+                                                <th>Class</th>
+                                                <th>Mobile</th>
+                                                <th>Fee Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredStudents.map((student, index) => (
+                                                <tr key={index}>
+                                                    <td className="fw-bold text-primary">{student.id}</td>
+                                                    <td>
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="bg-warning rounded-circle d-flex align-items-center justify-content-center mr-2"
+                                                                style={{ width: '25px', height: '25px' }}>
+                                                                <User size={16} className="text-white" />
+                                                            </div>
+                                                            {student.name}
+                                                        </div>
                                                     </td>
-                                                    <td className="fw-bold">Name</td>
-                                                    <td className="fw-bold">ISHA KANWAR</td>
+                                                    <td><span className="badge bg-secondary">{student.class}</span></td>
+                                                    <td>
+                                                        <Phone size={14} className="me-1" /> &nbsp;
+                                                        {student.mobile}
+                                                    </td>
+                                                    <td>
+                                                        <span className="badge bg-success">Paid</span> &nbsp;
+                                                        <span className="badge bg-warning ms-1">₹1100 Due</span>
+                                                    </td>
                                                 </tr>
-                                                <tr>
-                                                    <td className="fw-bold">Mobile</td>
-                                                    <td className="fw-bold">9023456378</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="fw-bold">Father</td>
-                                                    <td className="fw-bold">MAHESH SINGH</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="fw-bold">Mother</td>
-                                                    <td className="fw-bold">REKHA KANWAR</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="fw-bold">Father Mobile</td>
-                                                    <td className="fw-bold">4567890237</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                
+
+                    {/* student profile */}
+                    <div className='col-md-5' >
+                        <div className='card'>
+                            <div className='card-header bg-light'>
+                                <h4>Student Profile</h4>
+                            </div>
+                            <div className='card-body'>
+                                <div className="table-responsive border">
+                                    <table className="table table-bordered align-middle mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td rowSpan="5" className="text-center" style={{ width: '150px' }}>
+                                                    <img
+                                                        src="https://cdn-icons-png.flaticon.com/512/145/145867.png"
+                                                        alt="Student"
+                                                        className="img-fluid"
+                                                        style={{ maxHeight: '120px', backgroundColor: '#ffc107', padding: '10px' }}
+                                                    />
+                                                </td>
+                                                <td className="fw-bold">Name</td>
+                                                <td className="fw-bold">ISHA KANWAR</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold">Mobile</td>
+                                                <td className="fw-bold">9023456378</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold">Father</td>
+                                                <td className="fw-bold">MAHESH SINGH</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold">Mother</td>
+                                                <td className="fw-bold">REKHA KANWAR</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="fw-bold">Father Mobile</td>
+                                                <td className="fw-bold">4567890237</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             {/* ) : ( */}
             <div className="p-3">
@@ -258,7 +266,7 @@ const CollectFees = () => {
                                                 <th className='col-md-1'>Fee Type</th>
                                                 <th className='col-md-1'>Amount</th>
                                                 <th className='col-md-1'>Discount</th>
-                                                <th className='col-md-1'>Paid</th>
+                                                <th className='col-md-2'>Paid</th>
                                                 <th className='col-md-1'>Paid Fine</th>
                                                 <th className='col-md-1'>Pending</th>
                                                 <th className='col-md-1'>Due Date</th>
@@ -497,7 +505,7 @@ const CollectFees = () => {
                     </div>
                     <div className='card-body'>
                         <div className="table-responsive">
-                            <table className="table table-sm mb-0">
+                            <table className="table table-sm table-striped">
                                 <thead className="bg-light text-white">
                                     <tr>
                                         <th>Head Name</th>
@@ -514,11 +522,27 @@ const CollectFees = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td colSpan="11" className="text-center text-muted py-3">
-                                            No payment records found
-                                        </td>
-                                    </tr>
+                                    {payment.map((amt, index) => (
+                                        <tr key={index} className={amt.pending !== '₹ 0' }>
+                                            <td className="fw-bold">{amt.type}</td>
+                                            <td>{amt.receipt}</td>
+                                            <td>03/07/2025</td>
+                                            <td className="text-success fw-bold">₹ {amt.amount}</td>
+                                            <td>₹ {amt.discount}</td>
+                                            <td className="text-danger">{amt.paidFine}</td>
+                                            <td >
+                                        {amt.mode}
+                                            </td>
+                                            <td>
+                                               {amt.bankname}
+                                            </td>
+                                            <td>{amt.transictionid}</td>
+                                            <td className='text-success'>{amt.status}</td>
+                                            <td className="text-danger">
+                                                <a href='#' className='btn btn-danger'><i class="fa-solid fa-rotate-right"></i></a>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
