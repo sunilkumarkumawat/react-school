@@ -21,6 +21,8 @@ export const validateFields = async (fields, data, token) => {
       case 'contact_person':
       case 'description':
       case 'first_name':
+      case 'section_name':
+      case 'class_name':
       case 'father_name':
         if (!value || value.trim() === '') {
           errors[field] = 'This field is required';
