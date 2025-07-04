@@ -37,6 +37,7 @@ import { fetchBranches } from "./redux/branchSlice";
 import { fetchRoles } from "./redux/rolesSlice";
 import { fetchUsersList } from "./redux/usersListSlice";
 import CollectFees from "./components/FeesManagment/CollectFees";
+import FeesLegder from "./components/FeesManagment/FeesLedger";
 
 
 
@@ -199,7 +200,7 @@ function MainApp() {
               path="collectFees"
               element={<ProtectedRoute element={<CollectFees />} />}
             />
-           
+           <Route path="feesLedger" element={<ProtectedRoute element={<FeesLegder/>}/>} />
           </Route>
         )}
       </Routes>
