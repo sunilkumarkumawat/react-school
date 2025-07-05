@@ -38,6 +38,8 @@ import { fetchRoles } from "./redux/rolesSlice";
 import { fetchUsersList } from "./redux/usersListSlice";
 import CollectFees from "./components/FeesManagment/CollectFees";
 import FeesLegder from "./components/FeesManagment/FeesLedger";
+import FeesReceipt from "./components/FeesManagment/FeesReceipt";
+import AssignSubject from "./components/master/AssignSubject";
 
 
 
@@ -94,7 +96,7 @@ function MainApp() {
   const API_URL = process.env.REACT_APP_BASE_URL || "";
 
 
- 
+
 
   useEffect(() => {
     if (token) {
@@ -123,7 +125,7 @@ function MainApp() {
 
   return (
     <div className={theme}>
-    
+
       <Routes>
         <Route path="/" element={<Login />} />
         {isAuthenticated && (
@@ -200,7 +202,10 @@ function MainApp() {
               path="collectFees"
               element={<ProtectedRoute element={<CollectFees />} />}
             />
-           <Route path="feesLedger" element={<ProtectedRoute element={<FeesLegder/>}/>} />
+            <Route path="feesLedger" element={<ProtectedRoute element={<FeesLegder />} />} />
+            <Route path="feesReceipt" element={<ProtectedRoute element={<FeesReceipt />} />} />
+            <Route path="assignSubject" element={<ProtectedRoute element={<AssignSubject />} />} />
+
           </Route>
         )}
       </Routes>
