@@ -40,6 +40,9 @@ import CollectFees from "./components/FeesManagment/CollectFees";
 import FeesLegder from "./components/FeesManagment/FeesLedger";
 import FeesReceipt from "./components/FeesManagment/FeesReceipt";
 import AssignSubject from "./components/master/AssignSubject";
+import ComplaintList from "./components/master/ComplaintList";
+import NoticeBoard from "./components/master/NoticeBoard";
+import LeaveList from "./components/master/LeaveList";
 
 
 
@@ -205,7 +208,9 @@ function MainApp() {
             <Route path="feesLedger" element={<ProtectedRoute element={<FeesLegder />} />} />
             <Route path="feesReceipt" element={<ProtectedRoute element={<FeesReceipt />} />} />
             <Route path="assignSubject" element={<ProtectedRoute element={<AssignSubject />} />} />
-
+            <Route path="complaintList" element={<ProtectedRoute element={<ComplaintList />}/>} />
+            <Route path="noticeBoard" element={<ProtectedRoute element={<NoticeBoard />}/>} />
+            <Route path="leaveList" element={<ProtectedRoute element={<LeaveList />}/>} />
           </Route>
         )}
       </Routes>

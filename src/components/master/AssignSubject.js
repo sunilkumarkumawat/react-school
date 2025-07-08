@@ -136,96 +136,36 @@ const AssignSubject = () => {
                   </div>
                 </div>
                 <div className='card-body'>
-            
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <div className="container py-4">
-      
-        <div className="row mb-4">
-          <div className="col-12">
-            <div className="card border-0 shadow-sm">
-              <div className="card-body">
-                <div className="row align-items-end">
-                  <div className="col-md-8">
-                    <label className="form-label fw-semibold text-dark mb-2">
-                      <Users size={18} className="me-2" />
-                      Select Class
-                    </label>
-                    <select
-                      className="form-control"
-                      value={selectedClass}
-                      onChange={(e) => setSelectedClass(e.target.value)}
-                    >
-                      <option value="">Choose a class...</option>
-                      {classes.map(cls => (
-                        <option key={cls.id} value={cls.id}>{cls.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="col-md-4">
-                    <button
-                      className="btn btn-primary btn-lg w-100"
-                      onClick={handleClassSelect}
-                      disabled={!selectedClass}
-                    >
-                      <Plus size={18} className="me-2" />
-                      Select
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Subject Selection Section */}
-        {/* {showSubjects && (
-          <div className="row mb-4">
-            <div className="col-12">
-              <div className="card border-0 shadow-sm">
-                <div className="card-header bg-white border-0 pb-0">
-                  <h5 className="mb-3 text-primary fw-bold">
-                    <BookOpen size={20} className="me-2" />
-                    Select Subjects for {selectedClass} Class
-                  </h5>
-                </div>
-                <div className="card-body">
-                  <div className="row">
-                    {subjectsData[selectedClass]?.map(subject => (
-                      <div key={subject.id} className="col-md-6 col-lg-4 mb-3">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`subject-${subject.id}`}
-                            checked={selectedSubjects.find(s => s.id === subject.id) !== undefined}
-                            onChange={() => handleSubjectToggle(subject)}
-                          />
-                          <label className="form-check-label w-100" htmlFor={`subject-${subject.id}`}>
-                            <div className="d-flex justify-content-between align-items-center p-2 border rounded hover-card">
-                              <span className="fw-medium">{subject.name}</span>
-                              <span className={`badge ${subject.category === 'Main' ? 'bg-primary' : 'bg-secondary'}`}>
-                                {subject.category}
-                              </span>
-                            </div>
-                          </label>
+                    <div className="row">
+                      {subjectsData[selectedClass]?.map(subject => (
+                        <div key={subject.id} className="col-md-6 col-lg-4 mb-3">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id={`subject-${subject.id}`}
+                              checked={selectedSubjects.find(s => s.id === subject.id) !== undefined}
+                              onChange={() => handleSubjectToggle(subject)}
+                            />
+                            <label className="form-check-label w-100" htmlFor={`subject-${subject.id}`}>
+                              <div className="d-flex justify-content-between align-items-center p-2 border rounded hover-card">
+                                <span className="fw-medium">{subject.name}</span>
+                                <span className={`badge ${subject.category === 'Main' ? 'bg-primary' : 'bg-secondary'}`}>
+                                  {subject.category}
+                                </span>
+                              </div>
+                            </label>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+
 
                   <div className="text-center mt-4">
                     <button
-                      className="btn btn-success btn-lg px-5"
+                      className="btn btn-success"
                       onClick={handleSave}
-                      disabled={selectedSubjects.length === 0}
-                    >
-                      <Save size={18} className="me-2" />
+                      disabled={selectedSubjects.length === 0}>
                       Save Selected Subjects
                     </button>
                   </div>
@@ -233,10 +173,6 @@ const AssignSubject = () => {
               </div>
             </div>
           </div>
-        )} */}
-
-        {/* Assigned Subjects Table */}
-        {/* {assignedSubjects.length > 0 && (
           <div className="row">
             <div className="col-12">
               <div className="card border-0 shadow-sm">
@@ -248,8 +184,8 @@ const AssignSubject = () => {
                 </div>
                 <div className="card-body p-0">
                   <div className="table-responsive">
-                    <table className="table table-hover mb-0">
-                      <thead className="table-dark">
+                    <table className="table table-hover mb-0 table-bordered ttable-striped">
+                      <thead className="bg-light">
                         <tr>
                           <th className="fw-semibold">Sr.No.</th>
                           <th className="fw-semibold">Subject</th>
@@ -290,28 +226,23 @@ const AssignSubject = () => {
                     </table>
                   </div>
                 </div>
-                <div className="card-footer bg-white border-0 text-center">
-                  <button className="btn btn-primary btn-lg px-5">
-                    <Save size={18} className="me-2" />
+                {/* <div className="card-footer bg-white border-0 text-center">
+                  <button className="btn btn-primary ">
+                    
                     Submit All Assignments
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
-        )} */}
+        </div>
 
-        {/* Empty State */}
-        {/* {assignedSubjects.length === 0 && !showSubjects && (
-          <div className="text-center py-5">
-            <BookOpen size={64} className="text-muted mb-3" />
-            <h4 className="text-muted mb-2">No Subjects Assigned Yet</h4>
-            <p className="text-muted">Select a class and assign subjects to get started</p>
-          </div>
-        )} */}
       </div>
+     
 
-      {/* <style jsx>{`
+     
+
+      <style jsx>{`
         .hover-card:hover {
           background-color: #f8f9fa;
           border-color: #0d6efd !important;
@@ -341,7 +272,7 @@ const AssignSubject = () => {
         .badge {
           font-size: 0.75em;
         }
-      `}</style> */}
+      `}</style>
     </div>
   );
 };

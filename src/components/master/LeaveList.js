@@ -1,40 +1,37 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import DataTableWithExport from '../../components/common/DataTableWithExport';
+import DataTableWithExport from '../common/DataTableWithExport';
 import { formatDate } from "../../utils/formatDate";
+import ActionButton from "../common/ActionButton";
 
-const FeesReceipt = () => {
+const LeaveList = () => {
 
     const [isLoading, setIsLoading] = useState(false);
-    const receipt = [
+    const leaveList = [
         {
-            collect: "Admin",
-            receipt_no: "RCPT001",
-            status: "1",
-            admission_no: "ADM001",
-            class: "10-A",
-            name: "Amit Sharma",
-            father_name: "Rajesh Sharma",
-            payment_date: "2025-06-01",
-            discount: "500",
-            fine: "0",
-            amount: "4500"
-        },
-        {
-            collect: "Admin",
-            receipt_no: "RCPT002",
+            name: "Amit Kumar",
+            subject: "Medical Leave",
             status: "0",
-            admission_no: "ADM002",
-            class: "9-B",
-            name: "Sita Verma",
-            father_name: "Mohan Verma",
-            payment_date: "2025-06-03",
-            discount: "0",
-            fine: "50",
-            amount: "4550"
+            date: "2025-07-04",
+            reason: "High fever and doctor advised rest",
         },
-        // Add more static data objects as needed
+        {
+            name: "Sneha Sharma",
+            subject: "Personal Work",
+            status: "1",
+            date: "2025-07-05",
+            reason: "Family function at home",
+        },
+        {
+            name: "Ravi Verma",
+            subject: "Travel Leave",
+            status: "1",
+            date: "2025-07-03",
+            reason: "Travel to native place",
+        },
     ];
+
+
+
 
 
     // Columns for DataTable
@@ -44,51 +41,63 @@ const FeesReceipt = () => {
             selector: row => row.srno, // <-- Add this line
             cell: (row, rowIndex) => row.srno,
         },
-        { name: 'Collect', selector: row => row.collect || '' },
+        { name: 'Student Name', selector: row => row.name || '' },
         {
-            name: 'Receipt No',
+            name: 'Status',
             selector: row =>
-                row.receipt_no || ''
+                row.status || ''
         },
-        { name: 'Status', selector: row => row.status },
-        { name: 'Admission No', selector: row => row.admission_no },
-        { name: 'Class', selector: row => row.class },
-        { name: 'Student Name', selector: row => row.name },
-        { name: 'Father Name', selector: row => row.father_name },
-        { name: 'Payment Date', selector: row => row.payment_date },
-        { name: 'Discount', selector: row => row.discount },
-        { name: 'Fine', selector: row => row.fine },
-        { name: 'Amount', selector: row => row.amount },
-
+        { name: 'Subject', selector: row => row.subject },
+        {
+            name: 'Date',
+            selector: row => formatDate(row.date, "DD-MM-YYYY"),
+        },
+        { name: 'Reason', selector: row => row.reason },
+        {
+            name: 'Action',
+            cell: row =>
+                row.role_id === 1 ? (
+                    <span className="text-danger" style={{ fontSize: '10px' }}>Action Locked</span>
+                ) : (
+                    <>
+                        <ActionButton
+                            className="text-warning mr-1"
+                        // onClick={() => handleEdit(row)}
+                        >
+                            Edit
+                        </ActionButton>
+                        <ActionButton
+                            className="text-danger"
+                        // onClick={() => handleDelete(row.id,'' )}
+                        >
+                            Delete
+                        </ActionButton>
+                    </>
+                ),
+        },
 
     ];
 
     const csvHeaders = [
         { label: "SR.NO", key: "srno" },
-        { label: "Collect By", key: "collect" },
-        { label: "Receipt No", key: "receipt_no" },
-        { label: "Status", key: "status" },
-        { label: "Admission No", key: "admission_no" },
-        { label: "Gender", key: "gender" },
-        { label: "Class", key: "class" },
         { label: "Student Name", key: "name" },
-        { label: "Father's Name", key: "father_name" },
-        { label: "Payment Date", key: "payment_date" },
-        { label: "Discount", key: "discount" },
-        { label: "Fine", key: "fine" },
-        { label: "Amount", key: "amount" },
+        { label: "Status", key: "status" },
+        { label: "Subject", key: "subject" },
+        { label: "Date", key: "date" },
+        { label: "Reason", key: "reason" },
     ];
 
 
-    // Map receipt data for export and table
-    const exportMap = (receipt, idx) => ({
-        srno: idx + 1,
-        ...receipt,
-        // gender: receipt.gender,
 
-        status: receipt.status === '1' ? 'Received' : 'Pending'
+
+    // Map receipt data for export and table
+    const exportMap = (leaveList, idx) => ({
+        srno: idx + 1,
+        ...leaveList,
+
+        status: leaveList.status === '1' ? 'Approved' : 'Pending'
     });
-    const receiptWithSrNo = receipt.map(exportMap);
+    const leaveListWithSrNo = leaveList.map(exportMap);
 
 
     return (
@@ -100,10 +109,10 @@ const FeesReceipt = () => {
                             <a href="/dashboard">Dashboard</a>
                         </li>
                         <li className="breadcrumb-item">
-                            FeesManagment
+                            Master
                         </li>
                         <li className="breadcrumb-item">
-                            FeesReceipt
+                            LeaveList
                         </li>
                     </ul>
                 </div>
@@ -134,10 +143,10 @@ const FeesReceipt = () => {
                 <div style={{ filter: (isLoading) ? "blur(3px)" : "none", pointerEvents: (isLoading) ? "none" : "auto" }}>
                     <DataTableWithExport
                         columns={columns}
-                        data={receiptWithSrNo}
-                        csvFileName="receipt.csv"
-                        excelFileName="receipt.xlsx"
-                        pdfFileName="receipt.pdf"
+                        data={leaveListWithSrNo}
+                        csvFileName="leaveList.csv"
+                        excelFileName="leaveList.xlsx"
+                        pdfFileName="leaveList.pdf"
                         searchPlaceholder="Search by name, email, mobile, role"
                         exportHeaders={csvHeaders}
                         exportMap={exportMap}
@@ -148,7 +157,7 @@ const FeesReceipt = () => {
                         modal=""
                         token=""
                         onBulkDeleteSuccess={() => { }}
-                        onBulkDeleteError={error => console.error('Error deleting Receipt:', error)}
+                        onBulkDeleteError={error => console.error('Error deleting leaveList:', error)}
                     />
                 </div>
             </div>
@@ -157,4 +166,4 @@ const FeesReceipt = () => {
     )
 }
 
-export default FeesReceipt;
+export default LeaveList;
