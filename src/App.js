@@ -40,6 +40,9 @@ import CollectFees from "./components/FeesManagment/CollectFees";
 import FeesLegder from "./components/FeesManagment/FeesLedger";
 import FeesReceipt from "./components/FeesManagment/FeesReceipt";
 import AssignSubject from "./components/master/AssignSubject";
+import CreateExam from "./components/Examination/CreateExam";
+import ExamSchedule from "./components/Examination/ExamSchedule";
+import AdmitCardDownload from "./components/Examination/AdmitCardDownload";
 
 
 
@@ -205,6 +208,9 @@ function MainApp() {
             <Route path="feesLedger" element={<ProtectedRoute element={<FeesLegder />} />} />
             <Route path="feesReceipt" element={<ProtectedRoute element={<FeesReceipt />} />} />
             <Route path="assignSubject" element={<ProtectedRoute element={<AssignSubject />} />} />
+            <Route path="exam" element={<ProtectedRoute element={<CreateExam />} />} />
+            <Route path="examSchedule" element={<ProtectedRoute element={<ExamSchedule />} />} />
+            <Route path="admitCardDownload" element={<ProtectedRoute element={<AdmitCardDownload />} />} />
 
           </Route>
         )}
