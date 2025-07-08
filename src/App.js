@@ -43,6 +43,8 @@ import AssignSubject from "./components/master/AssignSubject";
 import CreateExam from "./components/Examination/CreateExam";
 import ExamSchedule from "./components/Examination/ExamSchedule";
 import AdmitCardDownload from "./components/Examination/AdmitCardDownload";
+import MarksheetDownload from "./components/Examination/MarksheetDownload";
+import FillMarksForm from "./components/Examination/FillMarksForm";
 
 
 
@@ -211,6 +213,8 @@ function MainApp() {
             <Route path="exam" element={<ProtectedRoute element={<CreateExam />} />} />
             <Route path="examSchedule" element={<ProtectedRoute element={<ExamSchedule />} />} />
             <Route path="admitCardDownload" element={<ProtectedRoute element={<AdmitCardDownload />} />} />
+            <Route path="marksheetDownload" element={<ProtectedRoute element={<MarksheetDownload />} />} />
+            <Route path="fillMarksForm" element={<ProtectedRoute element={<FillMarksForm />} />} />
 
           </Route>
         )}

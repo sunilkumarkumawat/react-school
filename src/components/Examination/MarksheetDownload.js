@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "../common/Select";
 import Input from "../common/Input";
-
-const AdmitCardDownload = () => {
+const MarksheetDownload = () => {
   // Sample student data
   const [allStudents] = useState([
     {
@@ -177,7 +176,6 @@ const AdmitCardDownload = () => {
     alert(`Downloading admit cards for: ${selectedStudentNames.join(", ")}`);
     // Here you would implement the actual download logic
   };
-
   return (
     <div className="mt-4">
       <div className="row">
@@ -185,7 +183,7 @@ const AdmitCardDownload = () => {
           <div className="card shadow">
             <div className="card-header bg-primary text-white">
               <h4 className="card-title mb-0">
-                <i className="fas fa-download me-2"></i> Download Admit Cards
+                <i className="fas fa-download me-2"></i> Download Marksheet
               </h4>
             </div>
             <div className="card-body">
@@ -221,17 +219,18 @@ const AdmitCardDownload = () => {
                   )
                 )}
                 <div className="col-md-3">
-                  <div className="d-flex" style={{margin:'20px 25px', gap:'9px'}}>
+                  <div
+                    className="d-flex"
+                    style={{ margin: "20px 25px", gap: "9px" }}
+                  >
                     <button className="btn btn-primary" onClick={handleSearch}>
-                      <i className="fas fa-search me-2"></i>{" "}
-                      Search
+                      <i className="fas fa-search me-2"></i> Search
                     </button>
                     <button
                       className="btn btn-outline-secondary"
                       onClick={handleReset}
                     >
-                      <i className="fas fa-redo me-2"></i>{" "}
-                      Reset
+                      <i className="fas fa-redo me-2"></i> Reset
                     </button>
                   </div>
                 </div>
@@ -246,7 +245,7 @@ const AdmitCardDownload = () => {
                       <table className="table table-striped table-hover">
                         <thead className="bg-light">
                           <tr>
-                            <th style={{width:'9%'}}>
+                            <th style={{ width: "9%" }}>
                               <div className="form-check">
                                 <input
                                   className="form-check-input"
@@ -307,7 +306,7 @@ const AdmitCardDownload = () => {
                     </div>
                   ) : (
                     <div className="alert alert-warning text-center">
-                      <i className="fas fa-exclamation-triangle me-2"></i>
+                      <i className="fas fa-exclamation-triangle me-2"></i>{' '}
                       No students found matching the selected criteria.
                     </div>
                   )}
@@ -320,8 +319,8 @@ const AdmitCardDownload = () => {
                         onClick={handleDownloadAdmitCards}
                         disabled={selectedStudents.length === 0}
                       >
-                        <i className="fas fa-download me-2"></i>
-                        Download Selected Admit Cards ({selectedStudents.length}
+                        <i className="fas fa-download me-2"></i>{' '}
+                        Download Selected Marksheets ({selectedStudents.length}
                         )
                       </button>
                     </div>
@@ -332,7 +331,7 @@ const AdmitCardDownload = () => {
               {/* Initial message when no search has been performed */}
               {!showResults && (
                 <div className="text-center py-5">
-                  <i className="fas fa-search fa-3x text-muted mb-3"></i>
+                  <i className="fas fa-search fa-3x text-muted mb-3"></i>{' '}
                   <h5 className="text-muted">
                     Select class and exam, then click Search to view students
                   </h5>
@@ -346,4 +345,4 @@ const AdmitCardDownload = () => {
   );
 };
 
-export default AdmitCardDownload;
+export default MarksheetDownload;
