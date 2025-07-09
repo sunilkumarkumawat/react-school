@@ -48,6 +48,9 @@ import ExamSchedule from "./components/Examination/ExamSchedule";
 import AdmitCardDownload from "./components/Examination/AdmitCardDownload";
 import MarksheetDownload from "./components/Examination/MarksheetDownload";
 import FillMarksForm from "./components/Examination/FillMarksForm";
+import ComplaintList from "./components/master/ComplaintList";
+import NoticeBoard from "./components/master/NoticeBoard";
+import LeaveList from "./components/master/LeaveList";
 
 
 
@@ -231,6 +234,9 @@ function MainApp() {
             <Route path="marksheetDownload" element={<ProtectedRoute element={<MarksheetDownload />} />} />
             <Route path="fillMarksForm" element={<ProtectedRoute element={<FillMarksForm />} />} />
 
+            <Route path="complaintList" element={<ProtectedRoute element={<ComplaintList />}/>} />
+            <Route path="noticeBoard" element={<ProtectedRoute element={<NoticeBoard />}/>} />
+            <Route path="leaveList" element={<ProtectedRoute element={<LeaveList />}/>} />
           </Route>
         )}
       </Routes>

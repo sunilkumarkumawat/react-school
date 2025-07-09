@@ -15,7 +15,10 @@ const SubjectAdd = () => {
                     type: "select",
                     name: "type",
                     required: true,
-                    Options : ['Main', 'other']
+                    options: [
+                        {label : 'Main', value :'Main'}, 
+                        {label : 'Other', value :'Other'}, 
+                    ]
                 },
             ],
         },
@@ -49,7 +52,17 @@ const SubjectAdd = () => {
                         {field.label}{" "}
                         {field.required && <span className="text-danger">*</span>}
                     </label>
-                    {(
+
+                    {field.type === "select" ? (
+                        <select className="form-control" defaultValue="">
+                            <option value="" disabled>Select {field.label}</option>
+                            {field.options?.map((opt) => (
+                                <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                </option>
+                            ))}
+                        </select>
+                    ) : (
                         <input
                             type={field.type}
                             className="form-control"
@@ -60,6 +73,7 @@ const SubjectAdd = () => {
             ))}
         </div>
     );
+
     return (
         <div className="">
             {/* Breadcrumb */}
