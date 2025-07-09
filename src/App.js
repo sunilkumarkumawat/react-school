@@ -40,6 +40,7 @@ import CollectFees from "./components/FeesManagment/CollectFees";
 import FeesLegder from "./components/FeesManagment/FeesLedger";
 import FeesReceipt from "./components/FeesManagment/FeesReceipt";
 import AssignSubject from "./components/master/AssignSubject";
+import Test from "./components/Test";
 
 
 
@@ -169,6 +170,10 @@ function MainApp() {
             <Route
               path="class"
               element={<ProtectedRoute element={<ClassPage />} />}
+            />
+            <Route
+              path="test"
+              element={<ProtectedRoute element={<Test />} />}
             />
             <Route
               path="eventcalender"
