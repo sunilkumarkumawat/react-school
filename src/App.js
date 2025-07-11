@@ -51,6 +51,11 @@ import FillMarksForm from "./components/Examination/FillMarksForm";
 import ComplaintList from "./components/master/ComplaintList";
 import NoticeBoard from "./components/master/NoticeBoard";
 import LeaveList from "./components/master/LeaveList";
+import Homework from "./components/Homework";
+import Session from "./components/master/Sessions";
+import AssignSalary from "./components/AssignSalary";
+
+
 
 
 
@@ -233,10 +238,13 @@ function MainApp() {
             <Route path="admitCardDownload" element={<ProtectedRoute element={<AdmitCardDownload />} />} />
             <Route path="marksheetDownload" element={<ProtectedRoute element={<MarksheetDownload />} />} />
             <Route path="fillMarksForm" element={<ProtectedRoute element={<FillMarksForm />} />} />
-
             <Route path="complaintList" element={<ProtectedRoute element={<ComplaintList />}/>} />
             <Route path="noticeBoard" element={<ProtectedRoute element={<NoticeBoard />}/>} />
             <Route path="leaveList" element={<ProtectedRoute element={<LeaveList />}/>} />
+            <Route path="homeWork" element={<ProtectedRoute element={<Homework />}/>} />            
+            <Route path="session" element={<ProtectedRoute element={<Session />}/>} />            
+            <Route path="assignSalary" element={<ProtectedRoute element={<AssignSalary />}/>} />            
+                    
           </Route>
         )}
       </Routes>
