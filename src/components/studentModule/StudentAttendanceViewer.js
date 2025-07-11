@@ -204,7 +204,7 @@ School Administration`;
     <div className="container-fluid py-4">
       <div className="row">
         <div className="col-12">
-          <div className="card shadow">
+          <div className="card card-orange card-outline card shadow">
             <div className="card-header bg-primary text-white">
               <h3 className="card-title mb-0">
                 <i className="fas fa-calendar-check me-2"></i>
@@ -221,7 +221,7 @@ School Administration`;
                   </label>
                   <select
                     id="classSelect"
-                    className="form-select"
+                    className="form-select mx-2"
                     value={selectedClass}
                     onChange={(e) => setSelectedClass(e.target.value)}
                   >
@@ -238,7 +238,7 @@ School Administration`;
                   </label>
                   <select
                     id="monthSelect"
-                    className="form-select"
+                    className="form-select mx-2"
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
                   >
@@ -255,7 +255,7 @@ School Administration`;
                   </label>
                   <select
                     id="yearSelect"
-                    className="form-select"
+                    className="form-select mx-2"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
                   >
@@ -343,17 +343,19 @@ School Administration`;
                 <div className="row mb-3">
                   <div className="col-12">
                     <div className="card bg-light">
-                      <div className="card-body py-2 text-center">
-                        <span className="fw-bold fs-3">Legend: </span>
-                        <span className="bg-success mx-2 p-1 rounded">P - Present</span>
-                        <span className="bg-danger mx-2 p-1 rounded">A - Absent</span>
-                        <span className="bg-secondary mx-2 p-1 rounded">H - Holiday</span>
+                      <div className="card-body py-3">
+                        <div className="d-flex flex-column flex-sm-row justify-content-center align-items-center flex-wrap gap-2 text-center">
+                          <span className="fw-bold fs-4">Legend:</span>
+                          <span className="bg-success text-white px-2 py-1 my-1 mx-1 rounded">P - Present</span>
+                          <span className="bg-danger text-white px-2 py-1 my-1 mx-1 rounded">A - Absent</span>
+                          <span className="bg-secondary text-white px-2 py-1 my-1 mx-1 rounded">H - Holiday</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
-
+                )}
+                
               {/* Day by Day Attendance Table */}
               <div className="table-responsive">
                 {loading ? (
