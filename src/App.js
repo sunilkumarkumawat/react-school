@@ -51,6 +51,7 @@ import FillMarksForm from "./components/Examination/FillMarksForm";
 import ComplaintList from "./components/master/ComplaintList";
 import NoticeBoard from "./components/master/NoticeBoard";
 import LeaveList from "./components/master/LeaveList";
+import SalaryGenerator from "./components/User Managment/SalaeryGenerate";
 
 
 
@@ -233,6 +234,7 @@ function MainApp() {
             <Route path="admitCardDownload" element={<ProtectedRoute element={<AdmitCardDownload />} />} />
             <Route path="marksheetDownload" element={<ProtectedRoute element={<MarksheetDownload />} />} />
             <Route path="fillMarksForm" element={<ProtectedRoute element={<FillMarksForm />} />} />
+            <Route path="salaryGenerator" element={<ProtectedRoute element={<SalaryGenerator />} />} />
 
             <Route path="complaintList" element={<ProtectedRoute element={<ComplaintList />}/>} />
             <Route path="noticeBoard" element={<ProtectedRoute element={<NoticeBoard />}/>} />
