@@ -25,6 +25,7 @@ import StudentAdd from "./components/studentModule/StudentAdd";
 import StudentView from "./components/studentModule/StudentView";
 import StudentAttendanceSystem from "./components/studentModule/StudentAttendanceSystem";
 import StudentAttendanceViewer from "./components/studentModule/StudentAttendanceViewer";
+import StudentPromote from "./components/studentModule/StudentPromote";
 import ClassPage from "./components/master/ClassPage";
 import EventCalender from "./components/master/EventCalender";
 import SubjectAdd from "./components/master/SubjectAdd";
@@ -190,6 +191,10 @@ function MainApp() {
             <Route 
               path="studentAttendanceViewer" 
               element ={<ProtectedRoute element={<StudentAttendanceViewer/>}/>}
+            />
+            <Route 
+              path="studentPromote" 
+              element ={<ProtectedRoute element={<StudentPromote/>}/>}
             />
             <Route
               path="class"

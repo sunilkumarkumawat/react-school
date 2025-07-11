@@ -248,7 +248,7 @@ const StudentAttendanceSystem = () => {
       <div className="row">
         {/* Main Content - Left Side */}
         <div className="col-lg-8 col-md-12">
-          <div className="card shadow-sm">
+          <div className="card card-orange card-outline">
             <div className="card-header bg-primary text-white">
               <h3 className="card-title mb-0">
                 <i className="fas fa-users me-2"></i>
@@ -270,8 +270,8 @@ const StudentAttendanceSystem = () => {
                   />
                 </div>
                 
-                <div className="col-md-2">
-                  <label htmlFor="classSelect" className="form-label fw-bold">Filter by Class</label>
+                <div className="col-md-2 my-1">
+                  <label htmlFor="classSelect" className="form-label fw-bold my-1">Filter by Class</label>
                   <br></br>
                   <select
                     id="classSelect"
@@ -286,7 +286,7 @@ const StudentAttendanceSystem = () => {
                   </select>
                 </div>
                 
-                <div className="col-md-3">
+                <div className="col-md-3 my-1">
                   <label htmlFor="searchInput" className="form-label fw-bold">Search Student</label>
                   <input
                     type="text"
@@ -299,7 +299,7 @@ const StudentAttendanceSystem = () => {
                 </div>
                 
                 <div className="col-md-4">
-                  <label className="form-label fw-bold d-block">Quick Actions</label>
+                  <label className="form-label fw-bold d-block my-1">Quick Actions</label>
                   <div className="d-flex" style={{gap:'9px'}}>
                     <button
                       className="btn btn-success"
@@ -422,15 +422,15 @@ const StudentAttendanceSystem = () => {
               {/* Action Buttons */}
               <div className="row mt-4">
                 <div className="col-12 text-center">
-                  <button className="btn btn-primary">
+                  <button className="btn btn-primary my-1">
                     <i className="fas fa-save me-2"></i>
                     &nbsp;&nbsp;Save Attendance
                   </button>
-                  <button className="btn btn-secondary ml-2">
+                  <button className="btn btn-secondary ml-2 my-1">
                     <i className="fas fa-print me-2"></i>
                     &nbsp;&nbsp;Print Report
                   </button>
-                  <button className="btn btn-info ml-2">
+                  <button className="btn btn-info ml-2 my-1">
                     <i className="fas fa-download me-2"></i>
                     &nbsp;&nbsp;Export Excel
                   </button>
@@ -441,7 +441,7 @@ const StudentAttendanceSystem = () => {
         </div>
   {/* Academic Calendar - Right Side with Tab Panel in Table Format */}
   <div className="col-lg-4 col-md-12">
-  <div className="card shadow-sm">
+  <div className="card card-orange card-outline">
     <div className="card-header bg-primary text-white">
       <h5 className="card-title mb-0">
         <i className="fas fa-calendar-alt me-2"></i>
@@ -506,8 +506,8 @@ const StudentAttendanceSystem = () => {
             <div className="alert alert-warning text-center">No events this month.</div>
           ) : (
             <div className="table-responsive">
-              <table className="table table-bordered table-hover table-sm">
-                <thead className="table-primary text-center">
+              <table className="table table-bordered table-sm">
+                <thead className="table-primary text-center bg-primary">
                   <tr>
                     <th>Date</th>
                     <th>Event</th>
@@ -558,8 +558,8 @@ const StudentAttendanceSystem = () => {
           aria-labelledby="full-calendar-tab"
         >
           <div className="table-responsive">
-            <table className="table table-bordered table-hover table-sm">
-              <thead className="table-primary text-center">
+            <table className="table table-bordered table-sm">
+              <thead className="table-primary text-center bg-primary">
                 <tr>
                   <th>Date</th>
                   <th>Event</th>
