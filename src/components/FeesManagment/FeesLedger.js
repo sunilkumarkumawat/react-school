@@ -40,35 +40,37 @@ const FeesLegder = () => {
             </div>
             <div className="card-body">
                 {/* filters to search */}
-                <form>
-                    <div className="row">
-                        <div className="col-md-2">
-                            <label className="form-label">Class</label>
-                            <select className="form-control" name="class">
-                                <option selected>All</option>
-                                <option value={1}>1st</option>
-                                <option value={2}>2nd</option>
-                                <option value={3}>3rd</option>
-                                <option value={4}>4th</option>
-                            </select>
+                <div className="bg-item rounded border p-2">
+                    <form>
+                        <div className="row">
+                            <div className="col-md-2">
+                                <label className="form-label">Class</label>
+                                <select className="form-control" name="class">
+                                    <option selected>All</option>
+                                    <option value={1}>1st</option>
+                                    <option value={2}>2nd</option>
+                                    <option value={3}>3rd</option>
+                                    <option value={4}>4th</option>
+                                </select>
+                            </div>
+                            <div className="col-md-2">
+                                <label className="form-label">From Date</label>
+                                <input type="date" className="form-control" name="start_date" />
+                            </div>
+                            <div className="col-md-2">
+                                <label className="form-label">To Date</label>
+                                <input type="date" className="form-control" name="to_date" />
+                            </div>
+                            <div className="col-md-3">
+                                <label className="form-label">Search By Keywords</label>
+                                <input type="text" className="form-control" name="search" placeholder="Ex. Name, Father Name, Mobile, Email etc." />
+                            </div>
+                            <div className="col-md-1 d-flex flex-column justify-content-end mt-3">
+                                <a href="#" className="btn btn-primary">Search</a>
+                            </div>
                         </div>
-                        <div className="col-md-2">
-                            <label className="form-label">From Date</label>
-                            <input type="date" className="form-control" name="start_date" />
-                        </div>
-                        <div className="col-md-2">
-                            <label className="form-label">To Date</label>
-                            <input type="date" className="form-control" name="to_date" />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Search By Keywords</label>
-                            <input type="text" className="form-control" name="search" placeholder="Ex. Name, Father Name, Mobile, Email etc." />
-                        </div>
-                        <div className="col-md-1 d-flex flex-column justify-content-end">
-                            <a href="#" className="btn btn-primary">Search</a>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
                 <div className="row mt-2">
                     <div className="col-md-12">
                         <div className="table-responsive">
