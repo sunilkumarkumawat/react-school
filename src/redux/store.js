@@ -17,6 +17,7 @@ import feesGroupsReducer  from './feesGroupSlice';
 import feesTypesReducer  from './feesTypeSlice';
 import feesMastersReducer  from './feesMasterSlice';
 import classesReducer  from './classSlice';
+import sectionsReducer  from './sectionSlice';
 
 const store = configureStore({
   reducer: {
@@ -38,6 +39,7 @@ const store = configureStore({
     feesTypes: feesTypesReducer,
     feesMasters: feesMastersReducer, 
     classes: classesReducer, 
+    sections: sectionsReducer, 
   },
 });
 

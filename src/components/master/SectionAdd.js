@@ -1,32 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
-import ActionButton from "../common/ActionButton";
+import Input from "../common/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { AppContext } from "../../context/AppContext";
-import { fetchClasses } from "../../redux/classSlice";
-import Select from "../common/Select";
+import axios from "axios";
+import { validateFields } from "../../utils/validation";
+import { fetchSections } from "../../redux/sectionSlice";
+import ActionButton from "../common/ActionButton";
 
-const ExamAssign = ({ setShowModal }) => {
-  const [selectedClass, setSelectedClass] = useState("");
-  const [assignedClasses, setAssignedClasses] = useState([]);
+const SectionAdd = ({ setShowModal }) => {
+  const columns = [{ label: "Section", name: "name", required: true }];
+  const sections = useSelector((state) => state.sections.sections || []);
   const { token } = useContext(AppContext);
   const dispatch = useDispatch();
   const API_URL = process.env.REACT_APP_BASE_URL || "";
-  const classes = useSelector((state) => state.classes.classes || []);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     id: "",
-    class_id: "",
+    name: "",
   });
-
-  // const classOptions = ["Class 1", "Class 2", "Class 3", "Class 4"];
-
-  const handleAssign = () => {
-    if (selectedClass && !assignedClasses.includes(selectedClass)) {
-      setAssignedClasses([...assignedClasses, selectedClass]);
-      setSelectedClass("");
-    }
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -39,11 +30,68 @@ const ExamAssign = ({ setShowModal }) => {
     }));
   };
 
+  const validateStep = async (fields) => {
+    const requiredFields = fields
+      .filter((col) => col.required)
+      .map((col) => col.name);
+    const validationErrors = await validateFields(
+      requiredFields,
+      formData,
+      token
+    );
+    setErrors(validationErrors);
+
+    return Object.keys(validationErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!(await validateStep(columns))) return;
+
+    // Create updated formData with permissions
+    const updatedFormData = {
+      ...formData,
+    };
+
+    try {
+      await axios.post(`${API_URL}/section`, updatedFormData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(fetchSections({ API_URL, token }));
+      setFormData({
+        id: "",
+        name: "",
+      });
+      setErrors({});
+    } catch (error) {
+      console.error("Error saving section:", error);
+    }
+  };
+
+  const handleDelete = async (sectionId) => {
+    if (!window.confirm("Are you sure you want to delete this Section?"))
+      return;
+    try {
+      await axios.delete(`${API_URL}/deleteSection/${sectionId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(fetchSections({ API_URL, token }));
+    } catch (error) {
+      console.error("Error deleting section:", error);
+    }
+  };
+
   useEffect(() => {
     if (token) {
-      dispatch(fetchClasses({ API_URL, token }));
+      dispatch(fetchSections({ API_URL, token }));
     }
   }, [token, API_URL, dispatch]);
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -58,41 +106,40 @@ const ExamAssign = ({ setShowModal }) => {
             <div className="card border-primary">
               <div className="card-header bg-primary text-white">
                 <h5 className="mb-0">
-                  <i className="fa fa-user-shield"></i>Assign Class to Exam
+                  <i className="fa fa-user-shield"></i> Add Section
                 </h5>
               </div>
               <div className="card-body">
-                <div className="row">
-                  <div className="col-sm-12">
-                    <Select
-                      key="class_id"
-                      label="Class"
-                      name="class_id"
-                      options={classes.map((classes) => ({
-                        value: classes.id,
-                        label: classes.class_name,
-                      }))} // ✅ Should be an array of { label, value } objects
-                      value={formData.class_id} // ✅ Correct key reference
-                      onChange={handleChange}
-                      required={true} // ✅ Boolean, not a string
-                      error={errors.class_id}
-                    />
+                <form onSubmit={handleSubmit}>
+                  <div className="row">
+                    {columns.map((col) => (
+                      <div className="col-sm-12" key={col.name}>
+                        <Input
+                          label={col.label}
+                          name={col.name}
+                          type={col.type || "text"}
+                          value={formData[col.name]}
+                          onChange={handleChange}
+                          required={col.required}
+                          error={errors[col.name]}
+                          pattern={col.pattern}
+                        />
+                      </div>
+                    ))}
+                    <div className="col-12 mt-2">
+                      <button className="btn btn-primary">Submit</button>
+                    </div>
                   </div>
-                  <div className="col-12 mt-2">
-                    <button onClick={handleAssign} className="btn btn-primary">
-                      Submit
-                    </button>
-                  </div>
-                </div>
+                </form>
               </div>
             </div>
           </div>
-          {/* class list */}
+
           <div className="col-md-9">
             <div className="card">
               <div className="card-header bg-primary text-white">
                 <h5 className="mb-0">
-                  <i className="fa fa-list"></i> Assigned Classes:
+                  <i className="fa fa-list"></i> Section List
                 </h5>
               </div>
               <div className="card-body">
@@ -101,18 +148,21 @@ const ExamAssign = ({ setShowModal }) => {
                     <thead className="bg-light">
                       <tr>
                         <th>Sr. No</th>
-                        <th>Class Name</th>
+                        <th>Name</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {assignedClasses.length > 0 ? (
-                        assignedClasses.map((classes, index) => (
-                          <tr key={classes.id}>
+                      {sections.length > 0 ? (
+                        sections.map((section, index) => (
+                          <tr key={section.id}>
                             <td>{index + 1}</td>
-                            <td>{classes.cls}</td>
+                            <td>{section.name}</td>
                             <td>
-                              <ActionButton className="btn btn-sm btn-danger">
+                              <ActionButton
+                                className="btn btn-sm btn-danger"
+                                onClick={() => handleDelete(section.id)}
+                              >
                                 Delete
                               </ActionButton>
                             </td>
@@ -121,7 +171,7 @@ const ExamAssign = ({ setShowModal }) => {
                       ) : (
                         <tr>
                           <td colSpan="4" className="text-center text-muted">
-                            No classes found.
+                            No fees group found.
                           </td>
                         </tr>
                       )}
@@ -156,7 +206,7 @@ const ExamAssign = ({ setShowModal }) => {
 
         .close-button{
           position: absolute;
-          top: -6%;
+          top: -3%;
           right: -1%;
           z-index: 99;
         }
@@ -180,4 +230,4 @@ const ExamAssign = ({ setShowModal }) => {
   );
 };
 
-export default ExamAssign;
+export default SectionAdd;

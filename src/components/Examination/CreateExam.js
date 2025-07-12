@@ -9,110 +9,114 @@ import { validateFields } from "../../utils/validation";
 import ExamAssign from "./ExamAssign";
 
 const CreateExam = () => {
-   const columns = [{ label: "Exam Name", name: "exam_name", required: true },{ label: "Description", name: "description", required: true }];
+  const columns = [
+    { label: "Exam Name", name: "exam_name", required: true },
+    { label: "Description", name: "description", required: true },
+  ];
 
-   const { token, user } = useContext(AppContext);
-    const dispatch = useDispatch();
-    const API_URL = process.env.REACT_APP_BASE_URL || "";
-    const classes = useSelector((state) => state.classes.classes || []);
-    const [formData, setFormData] = useState({
-      id: "",
-      class_name: "",
-      section_name: "",
-    });
-  
-    useEffect(() => {
-      if (token) {
-        dispatch(fetchClasses({ API_URL, token }));
-      }
-      // eslint-disable-next-line
-    }, [token, API_URL, dispatch]);
-  
-    const [isEdit, setIsEdit] = useState(false);
-    const [errors, setErrors] = useState({});
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-      setErrors((prev) => ({
-        ...prev,
-        [name]: undefined,
-      }));
-    };
-  
-  
-    const validateStep = async (fields) => {
-            const requiredFields = fields.filter(col => col.required).map(col => col.name);
-            const validationErrors = await validateFields(requiredFields, formData, token);
-            setErrors(validationErrors);
-          
-            return Object.keys(validationErrors).length === 0;
-          };
-    
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-       if (!await validateStep(columns)) return;
-  
-  
-      // Create updated formData with permissions
-      const updatedFormData = {
-        ...formData,
-      };
-  
-      const url = isEdit
-        ? `${API_URL}/class/${formData.id}`
-        : `${API_URL}/class`;
-      const method = isEdit ? "put" : "post";
-  
-      try {
-        await axios[method](url, updatedFormData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        dispatch(fetchClasses({ API_URL, token }));
-        setFormData({
-          id: "",
-          class_name: "",
-          section_name: "",
-        });
-        setIsEdit(false);
-        setErrors({});
-      } catch (error) {
-        console.error("Error saving role:", error);
-      }
-    };
-    const handleEdit = (classes) => {
-      setFormData({
-        id: classes.id || "",
-        class_name: classes.class_name || "",
-        section_name: classes.section_name || "",
-      });
-      setIsEdit(true);
-      setErrors({});
-    };
-    const handleDelete = async (classId) => {
-      if (!window.confirm("Are you sure you want to delete this Class?"))
-        return;
-      try {
-        await axios.delete(`${API_URL}/deleteClass/${classId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        dispatch(fetchClasses({ API_URL, token }));
-      } catch (error) {
-        console.error("Error deleting class:", error);
-      }
-    };
+  const { token, user } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const API_URL = process.env.REACT_APP_BASE_URL || "";
+  const classes = useSelector((state) => state.classes.classes || []);
+  const [formData, setFormData] = useState({
+    id: "",
+    class_name: "",
+    section_name: "",
+  });
 
-    const handleModal = () =>{
-        alert("Exam Assign to Class Modal");
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchClasses({ API_URL, token }));
     }
-const [showModal, setShowModal] = useState(false);
+    // eslint-disable-next-line
+  }, [token, API_URL, dispatch]);
+
+  const [isEdit, setIsEdit] = useState(false);
+  const [errors, setErrors] = useState({});
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: undefined,
+    }));
+  };
+
+  const validateStep = async (fields) => {
+    const requiredFields = fields
+      .filter((col) => col.required)
+      .map((col) => col.name);
+    const validationErrors = await validateFields(
+      requiredFields,
+      formData,
+      token
+    );
+    setErrors(validationErrors);
+
+    return Object.keys(validationErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!(await validateStep(columns))) return;
+
+    // Create updated formData with permissions
+    const updatedFormData = {
+      ...formData,
+    };
+
+    const url = isEdit ? `${API_URL}/class/${formData.id}` : `${API_URL}/class`;
+    const method = isEdit ? "put" : "post";
+
+    try {
+      await axios[method](url, updatedFormData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(fetchClasses({ API_URL, token }));
+      setFormData({
+        id: "",
+        class_name: "",
+        section_name: "",
+      });
+      setIsEdit(false);
+      setErrors({});
+    } catch (error) {
+      console.error("Error saving role:", error);
+    }
+  };
+  const handleEdit = (classes) => {
+    setFormData({
+      id: classes.id || "",
+      class_name: classes.class_name || "",
+      section_name: classes.section_name || "",
+    });
+    setIsEdit(true);
+    setErrors({});
+  };
+  const handleDelete = async (classId) => {
+    if (!window.confirm("Are you sure you want to delete this Class?")) return;
+    try {
+      await axios.delete(`${API_URL}/deleteClass/${classId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(fetchClasses({ API_URL, token }));
+    } catch (error) {
+      console.error("Error deleting class:", error);
+    }
+  };
+
+  const handleModal = () => {
+    alert("Exam Assign to Class Modal");
+  };
+  const [showModal, setShowModal] = useState(false);
   return (
     <div className="">
       <div className="row">
@@ -214,12 +218,9 @@ const [showModal, setShowModal] = useState(false);
           </div>
         </div>
       </div>
-         {showModal && (
-          <ExamAssign setShowModal={setShowModal} />
-         )}
+      {showModal && <ExamAssign setShowModal={setShowModal} />}
     </div>
   );
 };
 
-
-export default CreateExam
+export default CreateExam;
