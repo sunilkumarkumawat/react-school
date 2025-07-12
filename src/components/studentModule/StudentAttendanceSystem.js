@@ -259,7 +259,7 @@ const StudentAttendanceSystem = () => {
             <div className="card-body">
               {/* Controls Section */}
               <div className="row mb-4">
-                <div className="col-md-3">
+                <div className="col-md-3 mt-2">
                   <label htmlFor="dateInput" className="form-label fw-bold">Date</label>
                   <input
                     type="date"
@@ -270,12 +270,12 @@ const StudentAttendanceSystem = () => {
                   />
                 </div>
                 
-                <div className="col-md-2 my-1">
+                <div className="col-md-2 mt-2">
                   <label htmlFor="classSelect" className="form-label fw-bold my-1">Filter by Class</label>
                   <br></br>
                   <select
                     id="classSelect"
-                    className="form-select"
+                    className="form-select w-100"
                     value={selectedClass}
                     onChange={(e) => setSelectedClass(e.target.value)}
                   >
@@ -286,7 +286,7 @@ const StudentAttendanceSystem = () => {
                   </select>
                 </div>
                 
-                <div className="col-md-3 my-1">
+                <div className="col-md-3 mt-2">
                   <label htmlFor="searchInput" className="form-label fw-bold">Search Student</label>
                   <input
                     type="text"
