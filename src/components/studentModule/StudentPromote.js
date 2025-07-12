@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Search, Users, Download, FileText, CheckCircle, XCircle, Filter, UserCheck } from 'lucide-react';
 
 const StudentPromote = () => {
   const [currentClass, setCurrentClass] = useState('');
@@ -70,48 +69,63 @@ const StudentPromote = () => {
     setStudents(updated);
   };
 
-  const validateAndSubmit = () => {
-    const newErrors = {};
-    let isValid = true;
+const validateAndSubmit = () => {
+  const newErrors = {};
+  let isValid = true;
 
-    students.forEach(student => {
-      const newClass = student.newClass || promoteToAll;
-      const rollValid = student.roll !== '';
-      const actionValid = student.action === 'Promote' || student.action === 'Fail';
+  students.forEach(student => {
+    const newClass = student.newClass || promoteToAll;
+    const rollValid = student.roll !== '';
+    const actionValid = student.action === 'Promote' || student.action === 'Fail';
 
-      let classValid = true;
-      if (student.action === 'Promote') {
-        if (!newClass) {
-          classValid = false;
-          newErrors[student.id] = "Promotion class is required.";
-        } else if (newClass === student.currentClass) {
-          classValid = false;
-          newErrors[student.id] = "Cannot promote to same class.";
-        } else if (classOrder[newClass] <= classOrder[student.currentClass]) {
-          classValid = false;
-          newErrors[student.id] = "Promotion class must be higher than current class.";
-        }
-      }
+    let classValid = true;
 
-      if (!rollValid) {
-        isValid = false;
-        newErrors[student.id] = "Roll number is required.";
-      } else if (!actionValid) {
-        isValid = false;
-        newErrors[student.id] = "Select a valid action.";
-      } else if (!classValid) {
-        isValid = false;
-      }
-    });
-
-    if (!isValid) {
-      setErrors(newErrors);
-      return;
+    if (!rollValid) {
+      isValid = false;
+      newErrors[student.id] = "Roll number is required.";
+    } else if (!actionValid) {
+      isValid = false;
+      newErrors[student.id] = "Select a valid action.";
     }
 
-    setErrors({});
-    alert("Submission successful!");
-  };
+    if (student.action === 'Promote') {
+      if (!newClass) {
+        classValid = false;
+        newErrors[student.id] = "Promotion class is required.";
+      } else if (newClass === student.currentClass) {
+        classValid = false;
+        newErrors[student.id] = "Cannot promote to same class.";
+      } else if (classOrder[newClass] <= classOrder[student.currentClass]) {
+        classValid = false;
+        newErrors[student.id] = "Promotion class must be higher than current class.";
+      }
+    }
+
+    if (student.action === 'Fail') {
+      if (!newClass) {
+        classValid = false;
+        newErrors[student.id] = "Fail class is required.";
+      } else if (newClass !== student.currentClass) {
+        classValid = false;
+        newErrors[student.id] = "Fail class must be the same as current class.";
+      }
+    }
+
+    if (!classValid) {
+      isValid = false;
+    }
+  });
+
+  if (!isValid) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setErrors({});
+  alert("Submission successful!");
+};
+
+
 
   const handleExportPDF = () => {
     alert("PDF export functionality would be implemented here");
@@ -131,286 +145,249 @@ const StudentPromote = () => {
   const getFailedCount = () => students.filter(s => s.action === 'Fail').length;
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
-      <div className="container-fluid p-4">
-        {/* Header */}
-        <div className="card card-orange card-outline">
-          <div className=" card-header bg-light card-body text-center">
-            <div className="d-flex mb-3">
-              <Users className="mt-3" size={25} />
-              <h3 className="card-title mb-0 fw-bold mt-3">Student Promotion Panel</h3>
+    <div className="container-fluid py-4">
+      <div className="row">
+        <div className="col-md-12">
+          <div className="card card-orange card-outline">
+            <div className="card-header bg-primary text-white">
+              <h3 className="card-title mb-0">
+                <i className="fas fa-users me-2"></i>
+                &nbsp;&nbsp;Student Promotion Panel
+              </h3>
+            </div>
+            
+            <div className="card-body">
+              {/* Search Section */}
+              <div className="row mb-4">
+                <div className="col-md-4 mt-3">
+                  <label htmlFor="currentClass" className="form-label fw-bold">Select Current Class <span className="text-danger">*</span></label>
+                  <br></br>
+                  <select
+                    id="currentClass"
+                    className="form-select mt-2 w-100"
+                    style={{height:'25px'}}
+                    value={currentClass}
+                    onChange={(e) => setCurrentClass(e.target.value)}
+                  >
+                    <option value="">-- Select Class --</option>
+                    {classOptions.map(cls => (
+                      <option key={cls} value={cls}>{cls}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-md-4"></div>
+                <div className="col-md-4 mt-3">
+                  <label className="form-label fw-bold d-block">Search Students</label>
+                  <button
+                    className="btn btn-primary mt-2"
+                    onClick={handleSearch}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="spinner-border spinner-border-sm me-2" role="status"></div>
+                        Searching...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-search me-2"></i>
+                        &nbsp;&nbsp;Search
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Results Section */}
+              {showTable && (
+                <>
+                  {/* Statistics Section */}
+                  <div className="row mb-2">
+                    <div className="col-md-12">
+                      <div className="alert alert-info bg-primary">
+                        <div className="row text-center">
+                          <div className="col-md-3">
+                            <h5 className="mb-0">{students.length}</h5>
+                            <small>Total Students</small>
+                          </div>
+                          <div className="col-md-3">
+                            <h5 className="mb-0 text-success">{getPromotedCount()}</h5>
+                            <small>Promoted</small>
+                          </div>
+                          <div className="col-md-3">
+                            <h5 className="mb-0 text-danger">{getFailedCount()}</h5>
+                            <small>Failed</small>
+                          </div>
+                          <div className="col-md-3">
+                            <h5 className="mb-0 text-warning">{students.length - getPromotedCount() - getFailedCount()}</h5>
+                            <small>Pending</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Controls Section */}
+                  <div className="row mb-4">
+                    <div className="col-md-4 mt-3">
+                      <label htmlFor="searchStudent" className="form-label fw-bold">Search Students</label>
+                      <input
+                        id="searchStudent"
+                        type="text"
+                        className="form-control mt-2 w-100"
+                        placeholder="Search by name, roll or class..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="col-md-4 mt-3">
+                      <label htmlFor="promoteAll" className="form-label fw-bold">Promote All To Class</label>
+                      <br></br>
+                      <select
+                        id="promoteAll"
+                        className="form-select mt-2 w-100"
+                        style={{height:'23px'}}
+                        value={promoteToAll}
+                        onChange={(e) => handlePromoteToAllChange(e.target.value)}
+                      >
+                        <option value="">-- Select Class --</option>
+                        {classOptions.map((cls) => (
+                          <option key={cls} value={cls}>
+                            {cls}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div className="col-md-4 mt-2">
+                      <label className="form-label fw-bold d-block my-1">Quick Actions</label>
+                      <button
+                        className="btn btn-success mt-2"
+                        onClick={handleSelectAllPromote}
+                        disabled={students.length === 0}
+                      >
+                        <i className="fas fa-check me-2"></i>
+                        &nbsp;&nbsp;All Promote
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Students Table */}
+                  <div className="table-responsive">
+                    {filteredStudents.length === 0 ? (
+                      <div className="alert alert-warning text-center">
+                        <i className="fas fa-exclamation-triangle me-2"></i>
+                        No students found matching your criteria.
+                      </div>
+                    ) : (
+                      <table className="table table-striped table-hover">
+                        <thead className="bg-primary">
+                          <tr>
+                            <th scope="col" style={{ width: '8%' }}>Sr. No.</th>
+                            <th scope="col" style={{ width: '20%' }}>Student Name</th>
+                            <th scope="col" style={{ width: '12%' }}>Roll No.</th>
+                            <th scope="col" style={{ width: '15%' }}>Current Class</th>
+                            <th scope="col" style={{ width: '15%' }}>Promote To</th>
+                            <th scope="col" style={{ width: '15%' }}>Action</th>
+                            <th scope="col" style={{ width: '15%' }}>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredStudents.map((student, idx) => (
+                            <tr key={student.id}>
+                              <td className="fw-bold">{idx + 1}</td>
+                              <td>{student.name}</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value={student.roll}
+                                  onChange={(e) => handleRollChange(student.id, e.target.value)}
+                                  className="form-control form-control-sm"
+                                  style={{ width: '80px' }}
+                                />
+                              </td>
+                              <td>
+                                <span className="badge bg-secondary w-50">{student.currentClass}</span>
+                              </td>
+                              <td>
+                                <select
+                                  className="form-select form-select-sm"
+                                  value={student.newClass || ''}
+                                  onChange={(e) => handleClassChange(student.id, e.target.value)}
+                                >
+                                  <option value="">-- Select --</option>
+                                  {classOptions.map(cls => (
+                                    <option key={cls} value={cls}>{cls}</option>
+                                  ))}
+                                </select>
+                              </td>
+                              <td>
+                                <select
+                                  className="form-select form-select-sm"
+                                  value={student.action}
+                                  onChange={(e) => handleActionChange(student.id, e.target.value)}
+                                >
+                                  <option value="">-- Select --</option>
+                                  <option value="Promote">Promote</option>
+                                  <option value="Fail">Fail</option>
+                                </select>
+                              </td>
+                              <td>
+                                {errors[student.id] ? (
+                                  <span className="text-danger small">{errors[student.id]}</span>
+                                ) : student.action === 'Promote' ? (
+                                  <span className="badge bg-success w-50">
+                                    <i className="fas fa-check me-1"></i>
+                                    Promote
+                                  </span>
+                                ) : student.action === 'Fail' ? (
+                                  <span className="badge bg-danger w-50">
+                                    <i className="fas fa-times me-1"></i>
+                                    Fail
+                                  </span>
+                                ) : (
+                                  <span className="badge bg-warning w-50">Pending</span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="row mt-4">
+                    <div className="col-12 text-center">
+                      <button 
+                        className="btn btn-primary my-1"
+                        onClick={validateAndSubmit}
+                      >
+                        <i className="fas fa-save me-2"></i>
+                        &nbsp;&nbsp;Submit
+                      </button>
+                      <button 
+                        className="btn btn-secondary ml-2 my-1"
+                        onClick={handleExportPDF}
+                      >
+                        <i className="fas fa-file-pdf me-2"></i>
+                        &nbsp;&nbsp;PDF
+                      </button>
+                      <button 
+                        className="btn btn-info ml-2 my-1"
+                        onClick={handleExportExcel}
+                      >
+                        <i className="fas fa-file-excel me-2"></i>
+                        &nbsp;&nbsp;Excel
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
-        
-        {/* Search Section */}
-        <div className="card-body">
-            <div className="row g-3 align-items-end">
-              <div className="col-md-6 col-lg-4">
-                <label className="form-label fw-semibold">
-                  Select Current Class
-                </label>
-                <div className="row">
-                  <div className="col-12 col-sm-6 col-md-4 mb-3">
-                    <select
-                      className="form-select w-100"
-                      style={{height:'23px'}}
-                      value={currentClass}
-                      onChange={(e) => setCurrentClass(e.target.value)}
-                    >
-                      <option value="">-- Select Class --</option>
-                      {classOptions.map(cls => (
-                        <option key={cls} value={cls}>{cls}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-              </div>
-              <div className="col-md-6 col-lg-4 my-2">
-                <button
-                  className="btn btn-primary d-flex align-items-center justify-content-center"
-                  style={{width:'100px'}}
-                  onClick={handleSearch}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <div className="spinner-border spinner-border-sm me-2" role="status"></div>
-                      Searching...
-                    </>
-                  ) : (
-                    <>
-                      Search
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-
-        {/* Results Section */}
-        {showTable && (
-          <>
-            {/* Stats Cards */}
-            <div className="row g-3 mb-4">
-              <div className="col-md-4">
-                <div className="card border-0 shadow-sm">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div>
-                        <p className="card-text text-muted small mb-1">Total Students</p>
-                        <h3 className="card-title mb-0">{students.length}</h3>
-                      </div>
-                      <Users className="text-primary" size={32} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="card border-0 shadow-sm">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div>
-                        <p className="card-text text-muted small mb-1">Promoted</p>
-                        <h3 className="card-title mb-0 text-success">{getPromotedCount()}</h3>
-                      </div>
-                      <CheckCircle className="text-success" size={32} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="card border-0 shadow-sm">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div>
-                        <p className="card-text text-muted small mb-1">Failed</p>
-                        <h3 className="card-title mb-0 text-danger">{getFailedCount()}</h3>
-                      </div>
-                      <XCircle className="text-danger" size={32} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Controls */}
-            <div className="card shadow-sm mb-4">
-              <div className="card-body">
-                <div className="row g-3 align-items-end">
-                  
-                  {/* Search Students */}
-                  <div className="col-12 col-md-4">
-                    <label className="form-label fw-semibold" htmlFor="searchStudent">
-                      Search Students
-                    </label>
-                    <input
-                      id="searchStudent"
-                      type="text"
-                      className="form-control"
-                      placeholder="Search by name, roll or class"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Promote All To Class */}
-                  <div className="col-12 col-md-4 mt-3">
-                    <label className="form-label fw-semibold" htmlFor="promoteAll">
-                      Promote All To Class
-                    </label>
-                    <select
-                      id="promoteAll"
-                      className="form-select w-100"
-                      style={{height:'23px'}}
-                      value={promoteToAll}
-                      onChange={(e) => handlePromoteToAllChange(e.target.value)}
-                    >
-                      <option value="">-- Select Class --</option>
-                      {classOptions.map((cls) => (
-                        <option key={cls} value={cls}>
-                          {cls}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Select All Promote Button */}
-                  <div className="col-12 col-md-4">
-                    <button
-                      className="btn btn-success d-flex align-items-center justify-content-center mt-4"
-                      style={{width:'105px'}}
-                      onClick={handleSelectAllPromote}
-                    >
-                      All Promote
-                    </button>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-
-            {/* Table */}
-            <div className="card shadow-sm mb-4">
-              <div className="card-body p-0">
-                <div className="table-responsive">
-                  <table className="table mb-0">
-                    <thead className="table-primary bg-primary text-center">
-                      <tr>
-                        <th className="px-3 py-3">Sr. No.</th>
-                        <th className="px-3 py-3">Name</th>
-                        <th className="px-3 py-3">Roll No.</th>
-                        <th className="px-3 py-3">Current Class</th>
-                        <th className="px-3 py-3">Promote To</th>
-                        <th className="px-3 py-3">Action</th>
-                        <th className="px-3 py-3">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredStudents.map((student, idx) => (
-                        <tr key={student.id}>
-                          <td className="px-3 py-3 text-center">{idx + 1}</td>
-                          <td className="px-3 py-3 fw-medium text-center">{student.name}</td>
-                          <td className="px-3 py-3">
-                          <div className="d-flex justify-content-center align-items-center">
-                            <input
-                              type="number"
-                              value={student.roll}
-                              onChange={(e) => handleRollChange(student.id, e.target.value)}
-                              className="form-control form-control-sm text-center"
-                              style={{ width: '80px' }}
-                            />
-                          </div>
-                          </td>
-                          <td className="px-3 py-3 text-center">{student.currentClass}</td>
-                          <td className="px-3 py-3 text-center align-middle">
-                            <div className="d-flex justify-content-center align-items-center">
-                              <select
-                                className="form-select form-select-sm text-center"
-                                value={student.newClass || ''}
-                                onChange={(e) => handleClassChange(student.id, e.target.value)}
-                                style={{ width: '120px' }}  // optional: control width
-                              >
-                                <option value="">-- Select --</option>
-                                {classOptions.map(cls => (
-                                  <option key={cls} value={cls}>{cls}</option>
-                                ))}
-                              </select>
-                            </div>
-                          </td>
-                          <td className="px-3 py-3 text-center align-middle">
-                            <div className="d-flex justify-content-center align-items-center">
-                              <select
-                                className="form-select form-select-sm text-center"
-                                value={student.action}
-                                onChange={(e) => handleActionChange(student.id, e.target.value)}
-                                style={{ width: '120px' }}  // Optional: control size
-                              >
-                                <option value="">-- Select --</option>
-                                <option value="Promote">Promote</option>
-                                <option value="Fail">Fail</option>
-                              </select>
-                            </div>
-                          </td>
-                          <td className="px-3 py-3 text-center">
-                            {errors[student.id] ? (
-                              <span className="text-danger small">{errors[student.id]}</span>
-                            ) : student.action === 'Promote' ? (
-                              <span className="badge bg-success d-flex align-items-center" style={{ width: 'fit-content' }}>
-                                <CheckCircle className="me-1" size={12} />
-                                Promote
-                              </span>
-                            ) : student.action === 'Fail' ? (
-                              <span className="badge bg-danger d-flex align-items-center" style={{ width: 'fit-content' }}>
-                                <XCircle className="me-1" size={12} />
-                                Fail
-                              </span>
-                            ) : (
-                              <span className="text-muted small">Pending</span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="card shadow-sm">
-              <div className="card-body">
-                <div className="d-flex flex-wrap gap-2 justify-content-center">
-                  
-                  <button
-                    className="btn btn-primary d-flex align-items-center justify-content-center mx-2"
-                    onClick={validateAndSubmit}
-                  >
-                    Submit
-                  </button>
-
-                  <button
-                    className="btn btn-danger d-flex align-items-center justify-content-center mx-2"
-                    onClick={handleExportPDF}
-                  >
-                    PDF
-                  </button>
-
-                  <button
-                    className="btn btn-success d-flex align-items-center justify-content-center mx-2"
-                    onClick={handleExportExcel}
-                  >
-                    Excel
-                  </button>
-
-                </div>
-              </div>
-            </div>
-
-          </>
-        )}
       </div>
     </div>
   );

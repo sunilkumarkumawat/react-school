@@ -215,13 +215,13 @@ School Administration`;
             <div className="card-body">
               {/* Search Section */}
               <div className="row mb-4">
-                <div className="col-md-3">
+                <div className="col-md-3 my-2">
                   <label htmlFor="classSelect" className="form-label fw-bold">
                     Select Class <span className="text-danger">*</span>
                   </label>
                   <select
                     id="classSelect"
-                    className="form-select mx-2"
+                    className="form-select w-100"
                     value={selectedClass}
                     onChange={(e) => setSelectedClass(e.target.value)}
                   >
@@ -232,13 +232,13 @@ School Administration`;
                   </select>
                 </div>
                 
-                <div className="col-md-3">
+                <div className="col-md-3 my-2">
                   <label htmlFor="monthSelect" className="form-label fw-bold">
                     Select Month <span className="text-danger">*</span>
                   </label>
                   <select
                     id="monthSelect"
-                    className="form-select mx-2"
+                    className="form-select w-100"
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
                   >
@@ -249,13 +249,13 @@ School Administration`;
                   </select>
                 </div>
 
-                <div className="col-md-3">
+                <div className="col-md-3 my-2">
                   <label htmlFor="yearSelect" className="form-label fw-bold">
                     Select Year <span className="text-danger">*</span>
                   </label>
                   <select
                     id="yearSelect"
-                    className="form-select mx-2"
+                    className="form-select w-100"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
                   >
@@ -266,7 +266,7 @@ School Administration`;
                   </select>
                 </div>
                 
-                <div className="col-md-3 d-flex align-items-end">
+                <div className="col-md-3 d-flex align-items-end mt-3">
                   <button
                     className="btn btn-primary me-2"
                     onClick={handleSearch}
@@ -466,7 +466,7 @@ School Administration`;
                   <div className="col-12 text-end">
                     <button className="btn btn-success">
                       <i className="fas fa-download me-1"></i>
-                      Export to Excel
+                      &nbsp;&nbsp;Excel
                     </button>
                   </div>
                 </div>
